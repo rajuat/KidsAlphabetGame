@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 /**
  * Created by raju.athokpam on 19-08-2016.
  */
+@Deprecated
 public class MayekBoard {
     public final static int left = 250;
     public final static int top = 100;

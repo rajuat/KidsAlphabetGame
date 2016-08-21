@@ -1,10 +1,13 @@
 package com.itservz.android.mayekid.mayek;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -13,7 +16,7 @@ import com.itservz.android.mayekid.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MayekActivity extends AppCompatActivity {
+public class MayekActivity extends Activity {
 
     private List<MayekCard> mayeks;
     private int[] imageIds = null;
@@ -37,25 +40,42 @@ public class MayekActivity extends AppCompatActivity {
         recycler.setAdapter(mayekCardAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
         recycler.setLayoutManager(layoutManager);
+        recycler.addItemDecoration(new RecyclerView.ItemDecoration() {
+
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int totalHeight = parent.getHeight();
+                int maxCardWidth = 108;
+                int sidePadding = ((totalHeight - maxCardWidth) / 4) + 32;
+                sidePadding = Math.max(0, sidePadding);
+                outRect.set(0, sidePadding, 0, sidePadding);
+            }
+        });
         //recycler.smoothScrollBy(); use http://stackoverflow.com/questions/25684167/recyclerview-does-not-scroll-as-expected
 
+//        RecyclerView recycler1 = (RecyclerView)findViewById(R.id.recyclerview1);
+//        //recycler.setHasFixedSize(true);
+//        MayekCardAdapter mayekCardAdapter1 = new MayekCardAdapter(this, mayeks, getListener());
+//        recycler1.setAdapter(mayekCardAdapter);
+//        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+//        recycler1.setLayoutManager(layoutManager);
     }
 
     private List<MayekCard> getCards(){
         List<MayekCard> cards = new ArrayList<>();
-        cards.add(new MayekCard("A", R.drawable.a));
-        cards.add(new MayekCard("B", R.drawable.b));
-        cards.add(new MayekCard("C", R.drawable.c));
-        cards.add(new MayekCard("D", R.drawable.d));
-        cards.add(new MayekCard("E", R.drawable.e));
-        cards.add(new MayekCard("F", R.drawable.f));
-        cards.add(new MayekCard("G", R.drawable.g));
-        cards.add(new MayekCard("H", R.drawable.h));
-        cards.add(new MayekCard("I", R.drawable.i));
-        cards.add(new MayekCard("J", R.drawable.j));
-        cards.add(new MayekCard("K", R.drawable.k));
-        cards.add(new MayekCard("L", R.drawable.l));
-        cards.add(new MayekCard("M", R.drawable.m));
+        cards.add(new MayekCard("KOK", R.drawable.a, R.drawable.kok));
+        cards.add(new MayekCard("SAM", R.drawable.b, R.drawable.kok));
+        cards.add(new MayekCard("LAI", R.drawable.c, R.drawable.kok));
+        cards.add(new MayekCard("MIT", R.drawable.d, R.drawable.kok));
+        cards.add(new MayekCard("PA", R.drawable.e, R.drawable.kok));
+        cards.add(new MayekCard("NA", R.drawable.f, R.drawable.kok));
+        cards.add(new MayekCard("CHIL", R.drawable.g, R.drawable.kok));
+        cards.add(new MayekCard("TIL", R.drawable.h, R.drawable.kok));
+        cards.add(new MayekCard("KHOU", R.drawable.i, R.drawable.kok));
+        cards.add(new MayekCard("NGOU", R.drawable.j, R.drawable.kok));
+        cards.add(new MayekCard("THOU", R.drawable.k, R.drawable.kok));
+        cards.add(new MayekCard("WAI", R.drawable.l, R.drawable.kok));
+        cards.add(new MayekCard("YANG", R.drawable.m, R.drawable.kok));
         return cards;
     }
 

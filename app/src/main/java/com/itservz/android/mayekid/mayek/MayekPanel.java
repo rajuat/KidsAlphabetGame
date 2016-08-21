@@ -12,6 +12,7 @@ import com.itservz.android.mayekid.R;
 /**
  * Created by raju.athokpam on 19-08-2016.
  */
+@Deprecated
 public class MayekPanel extends SurfaceView implements SurfaceHolder.Callback{
 
     public MayekPanel(Context context) {

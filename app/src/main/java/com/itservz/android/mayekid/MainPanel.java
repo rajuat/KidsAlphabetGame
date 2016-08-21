@@ -15,6 +15,7 @@ import com.itservz.android.mayekid.mayek.MayekBoard;
 /**
  * Created by raju.athokpam on 19-08-2016.
  */
+@Deprecated
 public class MainPanel extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap mayekBoardBitmap;
 

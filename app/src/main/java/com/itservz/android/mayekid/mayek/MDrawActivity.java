@@ -24,7 +24,7 @@ import com.itservz.android.mayekid.R;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
+@Deprecated
 public class MDrawActivity extends Activity implements View.OnClickListener {
 
     //custom drawing view

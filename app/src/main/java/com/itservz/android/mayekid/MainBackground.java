@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 /**
  * Created by raju.athokpam on 19-08-2016.
  */
+@Deprecated
 public class MainBackground {
     private Bitmap image;
     public MainBackground(Bitmap res){

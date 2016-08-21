@@ -30,7 +30,8 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
     public static class MayekCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         CardView cv;
         TextView title;
-        ImageView cover;
+        ImageView mayekIcon;
+        ImageView pictureIcon;
         int imageId;
         public MayekCardClickListener mayekCardClickListener;
 
@@ -38,8 +39,8 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cardview);
             title = (TextView)itemView.findViewById(R.id.title);
-            cover = (ImageView)itemView.findViewById(R.id.photo);
-
+            mayekIcon = (ImageView)itemView.findViewById(R.id.mayekicon);
+            pictureIcon = (ImageView)itemView.findViewById(R.id.mayekpic);
             this.mayekCardClickListener = mayekCardClickListener;
             itemView.setOnClickListener(this);
         }
@@ -75,8 +76,10 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
         mayekCardViewHolder.imageId = mayeks.get(i).getRes();
         mayekCardViewHolder.title.setText(mayeks.get(i).getTitle());
         System.out.println("image identifier " + mayekCardViewHolder.imageId);
-        //mayekCardViewHolder.cover.setImageResource(R.drawable.);
-        mayekCardViewHolder.cover.setImageResource(mayekCardViewHolder.imageId);
+        mayekCardViewHolder.mayekIcon.setImageResource(mayekCardViewHolder.imageId);
+        mayekCardViewHolder.pictureIcon.setImageResource(mayeks.get(i).getPicture());
+        mayekCardViewHolder.cv.setBackgroundResource(R.drawable.board);
+
 
         //perhaps to enable clink on card
         /*mayekCardViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
