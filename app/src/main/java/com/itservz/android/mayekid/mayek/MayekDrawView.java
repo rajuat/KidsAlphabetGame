@@ -71,7 +71,6 @@ public class MayekDrawView extends View {
 	//draw the view - will be called after touch event
 	@Override
 	protected void onDraw(Canvas canvas) {
-		System.out.println("onDraw from MayejDrawView");
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
 	}
@@ -170,6 +169,11 @@ public class MayekDrawView extends View {
 		paintAlpha= Math.round((float)newAlpha/100*255);
 		drawPaint.setColor(paintColor);
 		drawPaint.setAlpha(paintAlpha);
+	}
+
+	@Override
+	public boolean hasOverlappingRendering(){
+		return false;
 	}
 }
 

@@ -46,7 +46,7 @@ public class MayekActivity extends Activity {
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 int totalHeight = parent.getHeight();
                 int maxCardWidth = 108;
-                int sidePadding = ((totalHeight - maxCardWidth) / 4) + 32;
+                int sidePadding = ((totalHeight - maxCardWidth) / 4);
                 sidePadding = Math.max(0, sidePadding);
                 outRect.set(0, sidePadding, 0, sidePadding);
             }

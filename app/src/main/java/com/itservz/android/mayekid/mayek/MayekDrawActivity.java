@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -30,12 +32,15 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     //custom drawing view
     private MayekDrawView currentDrawView;
     //buttons
-    private ImageButton currPaint, drawBtn, eraseBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
+    private ImageView currPaint, drawBtn, eraseBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
     //sizes
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
     private int imageId;
     Map<Integer, MayekDrawView> views = new HashMap<Integer, MayekDrawView>();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +53,15 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
-        System.out.println("MayekDrawActivity " + imageId);
 
         //get drawing view
         currentDrawView = (MayekDrawView)findViewById(R.id.drawing1);
-        currentDrawView.setBackgroundResource(imageId);
 
+        float alpha = 0.9f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            currentDrawView.setAlpha(alpha);
+        }
+        currentDrawView.setBackgroundResource(imageId);
         //get the palette and first color button
         LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
         currPaint = (ImageButton)paintLayout.getChildAt(0);
@@ -65,37 +73,35 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         largeBrush = getResources().getInteger(R.integer.large_size);
 
         //draw button
-        drawBtn = (ImageButton)findViewById(R.id.draw_btn);
+        drawBtn = (ImageView)findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
         //set initial size
         currentDrawView.setBrushSize(mediumBrush);
 
         //erase button
-        eraseBtn = (ImageButton)findViewById(R.id.erase_btn);
+        eraseBtn = (ImageView)findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
 
         //new button
-        newBtn = (ImageButton)findViewById(R.id.new_btn);
+        newBtn = (ImageView)findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
         //save button
-        saveBtn = (ImageButton)findViewById(R.id.save_btn);
+        saveBtn = (ImageView)findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
 
         //opacity
-        opacityBtn = (ImageButton)findViewById(R.id.opacity_btn);
+        opacityBtn = (ImageView)findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
         //previous button
-        previousBtn = (ImageButton)findViewById(R.id.previous_btn);
+        previousBtn = (ImageView)findViewById(R.id.previous_btn);
         previousBtn.setOnClickListener(this);
 
         //next
-        nextBtn = (ImageButton)findViewById(R.id.next_btn);
+        nextBtn = (ImageView)findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
-
-        System.out.println("Draw activity create" + imageIds);
     }
 
     @Override
@@ -203,22 +209,8 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             brushDialog.show();
         }
         else if(view.getId()==R.id.new_btn){
-            //new button
-            AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-            newDialog.setTitle("New drawing");
-            newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
-            newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    currentDrawView.startNew();
-                    dialog.dismiss();
-                }
-            });
-            newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    dialog.cancel();
-                }
-            });
-            newDialog.show();
+            currentDrawView.startNew();
+
         }
         else if(view.getId()==R.id.save_btn){
             //save drawing
