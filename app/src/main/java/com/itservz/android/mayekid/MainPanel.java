@@ -30,7 +30,7 @@ public class MainPanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         System.out.println("surface created");
-        MainBackground mainBackground = new MainBackground(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+        MainBackground mainBackground = new MainBackground(BitmapFactory.decodeResource(getResources(), R.drawable.bg));
         mayekBoardBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.board);
         //scaledBitmap = Bitmap.createScaledBitmap(mayekBoardBitmap, 100, 100, true);
         MayekBoard mayekBoard = new MayekBoard(mayekBoardBitmap);
