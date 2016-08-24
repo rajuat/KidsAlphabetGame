@@ -51,14 +51,6 @@ public class MayekActivity extends Activity {
                 outRect.set(0, sidePadding, 0, sidePadding);
             }
         });
-        //recycler.smoothScrollBy(); use http://stackoverflow.com/questions/25684167/recyclerview-does-not-scroll-as-expected
-
-//        RecyclerView recycler1 = (RecyclerView)findViewById(R.id.recyclerview1);
-//        //recycler.setHasFixedSize(true);
-//        MayekCardAdapter mayekCardAdapter1 = new MayekCardAdapter(this, mayeks, getListener());
-//        recycler1.setAdapter(mayekCardAdapter);
-//        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-//        recycler1.setLayoutManager(layoutManager);
     }
 
     private List<MayekCard> getCards(){
@@ -76,6 +68,11 @@ public class MayekActivity extends Activity {
         cards.add(new MayekCard("THOU", R.drawable.k, R.drawable.kok));
         cards.add(new MayekCard("WAI", R.drawable.l, R.drawable.kok));
         cards.add(new MayekCard("YANG", R.drawable.m, R.drawable.kok));
+        cards.add(new MayekCard("HUK", R.drawable.n, R.drawable.kok));
+        cards.add(new MayekCard("UOON", R.drawable.o, R.drawable.kok));
+        cards.add(new MayekCard("EE", R.drawable.p, R.drawable.kok));
+        cards.add(new MayekCard("PHAM", R.drawable.q, R.drawable.kok));
+        cards.add(new MayekCard("ATIYA", R.drawable.r, R.drawable.kok));
         return cards;
     }
 
@@ -92,3 +89,4 @@ public class MayekActivity extends Activity {
         };
     }
 }
+

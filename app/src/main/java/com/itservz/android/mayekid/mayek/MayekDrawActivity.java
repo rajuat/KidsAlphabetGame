@@ -5,7 +5,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +20,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +32,9 @@ import android.widget.Toast;
 
 import com.itservz.android.mayekid.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,8 +50,8 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     private int[] imageIds;
     private int imageId;
     Map<Integer, MayekDrawView> views = new HashMap<Integer, MayekDrawView>();
-
-
+    private Animation animation;
+    private View animatedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +77,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         //get the palette and first color button
         LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
         currPaint = (ImageButton)paintLayout.getChildAt(0);
+        currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
 
         //sizes from dimensions
@@ -102,6 +115,12 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         //next
         nextBtn = (ImageView)findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
+
+        SeekBar backSeekBar = (SeekBar)findViewById(R.id.back_seek);
+        backSeekBar.setProgress(100);
+        //backSeekBar.setVisibility(SeekBar.INVISIBLE);
+
+        animation  = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
     }
 
     @Override
@@ -120,12 +139,12 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         currentDrawView.setPaintAlpha(100);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());
 
-        if(view!=currPaint){
-            ImageButton imgView = (ImageButton)view;
+        if(view != currPaint){
+            ImageButton imageButton = (ImageButton)view;
             String color = view.getTag().toString();
             currentDrawView.setColor(color);
             //update ui
-            imgView.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
+            imageButton.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
             currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
             currPaint=(ImageButton)view;
         }
@@ -133,11 +152,14 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
 
     @Override
     public void onClick(View view){
-
+        if(animatedView != null) {
+            animatedView.clearAnimation();
+        }
         if(view.getId()==R.id.draw_btn){
+            animatedView = animate(view);
             //draw button clicked
             final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Brush size:");
+            brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             brushDialog.setContentView(R.layout.brush_chooser);
             //listen for clicks on size buttons
             ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
@@ -174,9 +196,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             brushDialog.show();
         }
         else if(view.getId()==R.id.erase_btn){
+            animatedView = animate(view);
             //switch to erase - choose size
             final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Eraser size:");
+            brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             brushDialog.setContentView(R.layout.brush_chooser);
             //size buttons
             ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
@@ -209,11 +232,13 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             brushDialog.show();
         }
         else if(view.getId()==R.id.new_btn){
+            animatedView = animate(view);
             currentDrawView.startNew();
 
         }
         else if(view.getId()==R.id.save_btn){
             //save drawing
+            animatedView = animate(view);
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
             saveDialog.setTitle("Save drawing");
             saveDialog.setMessage("Save drawing to device Gallery?");
@@ -222,9 +247,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
                     //save drawing
                     currentDrawView.setDrawingCacheEnabled(true);
                     //attempt to save
-                    String imgSaved = MediaStore.Images.Media.insertImage(
+                    /*String imgSaved = MediaStore.Images.Media.insertImage(
                             getContentResolver(), currentDrawView.getDrawingCache(),
-                            UUID.randomUUID().toString()+".png", "drawing");
+                            UUID.randomUUID().toString()+".png", "drawing");*/
+                    String imgSaved = savePicture(currentDrawView.getDrawingCache(),UUID.randomUUID().toString()+".png");
                     //feedback
                     if(imgSaved!=null){
                         Toast savedToast = Toast.makeText(getApplicationContext(),
@@ -247,48 +273,51 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             saveDialog.show();
         }
         else if(view.getId()==R.id.opacity_btn){
+            animatedView = animate(view);
             //launch opacity chooser
             final Dialog seekDialog = new Dialog(this);
-            seekDialog.setTitle("Opacity level:");
+            seekDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             seekDialog.setContentView(R.layout.opacity_chooser);
             //get ui elements
             final TextView seekTxt = (TextView)seekDialog.findViewById(R.id.opq_txt);
+            //R.color.g1, R.color.g2, R.color.g3, R.color.g4, R.color.g5, R.color.g6, R.color.g7, R.color.g8, R.color.g9, R.color.g10
+            LinearGradient test = new LinearGradient(0.f, 0.f, 700.f, 0.0f,
+                    new int[] { 0xFF000000, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF, 0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF},
+                    null, Shader.TileMode.CLAMP);
+            ShapeDrawable shape = new ShapeDrawable(new RectShape());
+            shape.getPaint().setShader(test);
             final SeekBar seekOpq = (SeekBar)seekDialog.findViewById(R.id.opacity_seek);
+            seekOpq.setProgressDrawable( (Drawable)shape );
             //set max
             seekOpq.setMax(100);
             //show current level
             int currLevel = currentDrawView.getPaintAlpha();
             seekTxt.setText(currLevel+"%");
             seekOpq.setProgress(currLevel);
+
             //update as user interacts
             seekOpq.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     seekTxt.setText(Integer.toString(progress)+"%");
+                    currentDrawView.setPaintAlpha(seekOpq.getProgress());
+                    //
                 }
 
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {}
 
             });
-            //listen for clicks on ok
-            Button opqBtn = (Button)seekDialog.findViewById(R.id.opq_ok);
-            opqBtn.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setPaintAlpha(seekOpq.getProgress());
-                    seekDialog.dismiss();
-                }
-            });
             //show dialog
             seekDialog.show();
         }
         else if(view.getId() == R.id.next_btn){
-            System.out.println("next " + imageId);
+            animatedView = animate(view);
             for(int i = 0; i < imageIds.length; i++){
                 if(imageId == imageIds[i] && i < imageIds.length-1){
                     imageId = imageIds[i+1];
@@ -299,7 +328,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             currentDrawView.setBackgroundResource(imageId);
         }
         else if(view.getId() == R.id.previous_btn){
-            System.out.println("previous " + imageId);
+            animatedView = animate(view);
             for(int i = 0; i < imageIds.length; i++){
                 if(imageId == imageIds[i] && i > 0){
                     imageId = imageIds[i-1];
@@ -309,6 +338,35 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             currentDrawView.startNew();
             currentDrawView.setBackgroundResource(imageId);
         }
+    }
+
+
+    private View animate(View imageView){
+        imageView.startAnimation(animation);
+        return imageView;
+    }
+
+    private String savePicture(Bitmap bm, String imgName) {
+        String s = null;
+        OutputStream fOut = null;
+        String strDirectory = Environment.getExternalStorageDirectory().toString();
+
+        File f = new File(strDirectory, imgName);
+        try {
+            fOut = new FileOutputStream(f);
+
+            /**Compress image**/
+            bm.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+
+            /**Update image to gallery**/
+            s = MediaStore.Images.Media.insertImage(getContentResolver(),
+                    f.getAbsolutePath(), f.getName(), f.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 
 }

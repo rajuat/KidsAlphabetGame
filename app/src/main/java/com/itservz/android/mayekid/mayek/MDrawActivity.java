@@ -276,6 +276,7 @@ public class MDrawActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     seekTxt.setText(Integer.toString(progress)+"%");
+                    currentDrawView.setPaintAlpha(seekOpq.getProgress());
                 }
 
                 @Override
@@ -285,7 +286,7 @@ public class MDrawActivity extends Activity implements View.OnClickListener {
                 public void onStopTrackingTouch(SeekBar seekBar) {}
 
             });
-            //listen for clicks on ok
+            /*//listen for clicks on ok
             Button opqBtn = (Button)seekDialog.findViewById(R.id.opq_ok);
             opqBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -293,7 +294,7 @@ public class MDrawActivity extends Activity implements View.OnClickListener {
                     currentDrawView.setPaintAlpha(seekOpq.getProgress());
                     seekDialog.dismiss();
                 }
-            });
+            });*/
             //show dialog
             seekDialog.show();
         }

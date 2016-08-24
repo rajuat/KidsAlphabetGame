@@ -6,19 +6,48 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="0dp"
     android:background="@drawable/bg"
     tools:context="com.itservz.android.mayekid.MainActivity">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:src="@drawable/mb"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/mayekBoardButton"
         android:onClick="goToMayek"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="220dp"
+        android:src="@drawable/noticeboard"
+        android:id="@+id/noticeboard"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/cartoonBoardButton"
+        android:layout_toStartOf="@+id/cartoonBoardButton"
+        android:onClick="goToNoticeBoard"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/previous"
+        android:id="@+id/gotodraw"
+        android:layout_alignTop="@+id/gotopaint"
+        android:layout_toRightOf="@+id/mayekBoardButton"
+        android:layout_toEndOf="@+id/mayekBoardButton" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/next"
+        android:id="@+id/gotopaint"
+        android:layout_alignBottom="@+id/cartoonBoardButton"
+        android:layout_toLeftOf="@+id/cartoonBoardButton"
+        android:layout_toStartOf="@+id/cartoonBoardButton" />
 
     <ImageView
         android:layout_width="180dp"
@@ -29,6 +58,5 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/cartoonBoardButton"
         android:onClick="goToCartoon"/>
-
 
 </RelativeLayout>

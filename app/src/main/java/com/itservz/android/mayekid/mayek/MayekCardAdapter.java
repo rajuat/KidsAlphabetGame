@@ -21,12 +21,6 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
     List<MayekCard> mayeks;
     private Context context;
 
-    MayekCardAdapter(Context context, List<MayekCard> books, MayekCardAdapterClickListener mayekCardAdapterClickListener){
-        this.mayeks = books;
-        this.mayekCardAdapterClickListener = mayekCardAdapterClickListener;
-        this.context = context;
-    }
-
     public static class MayekCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         CardView cv;
         TextView title;
@@ -50,6 +44,12 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
             System.out.println("MayekCardViewHolder constructor onclick" + imageId);
             mayekCardClickListener.mayekCardOnClick(imageId);
         }
+    }
+
+    MayekCardAdapter(Context context, List<MayekCard> books, MayekCardAdapterClickListener mayekCardAdapterClickListener){
+        this.mayeks = books;
+        this.mayekCardAdapterClickListener = mayekCardAdapterClickListener;
+        this.context = context;
     }
 
     @Override

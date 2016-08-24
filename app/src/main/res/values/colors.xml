@@ -4,4 +4,16 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="transparent_black">#FF000000</color>
+
+    <color name="g1">#E8F6F3</color>
+    <color name="g2">#D0ECE7</color>
+    <color name="g3">#A2D9CE</color>
+    <color name="g4">#73C6B6</color>
+    <color name="g5">#45B39D</color>
+    <color name="g6">#16A085</color>
+    <color name="g7">#138D75</color>
+    <color name="g8">#117A65</color>
+    <color name="g9">#0E6655</color>
+    <color name="g10">#0B5345</color>
+
 </resources>

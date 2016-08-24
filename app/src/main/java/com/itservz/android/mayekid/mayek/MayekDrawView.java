@@ -12,16 +12,22 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.itservz.android.mayekid.R;
 
 
 public class MayekDrawView extends View {
-
+	private Context context;
 	//drawing path
 	private Path drawPath;
 	//drawing and canvas paint
@@ -36,9 +42,14 @@ public class MayekDrawView extends View {
 	private float brushSize, lastBrushSize;
 	//erase flag
 	private boolean erase=false;
+	//animate
+	private boolean animate = false;
+	private float radius = 50;
+	private float touchX, touchY;
 
 	public MayekDrawView(Context context, AttributeSet attrs){
 		super(context, attrs);
+		this.context = context;
 		setupDrawing();
 	}
 
@@ -62,7 +73,6 @@ public class MayekDrawView extends View {
 	//size assigned to view
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		System.out.println("MayekDrawView.onSizeCahneg");
 		super.onSizeChanged(w, h, oldw, oldh);
 		canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		drawCanvas = new Canvas(canvasBitmap);
@@ -73,13 +83,20 @@ public class MayekDrawView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
+		if(animate){
+//			Bitmap star = BitmapFactory.decodeResource(getResources(), R.drawable.star);
+//			canvas.drawBitmap(star, touchX - radius, touchY - radius, drawPaint);
+//			canvas.drawBitmap(star, touchX - radius + 20, touchY - radius - 20, drawPaint);
+//			canvas.drawBitmap(star, touchX - radius + 40, touchY - radius + 10, drawPaint);
+			animate = false;
+		}
 	}
 
 	//register user touches as drawing action
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		float touchX = event.getX();
-		float touchY = event.getY();
+		touchX = event.getX();
+		touchY = event.getY();
 		//respond to down, move and up events
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
@@ -94,6 +111,7 @@ public class MayekDrawView extends View {
 			System.out.println("MotionEvent.ACTION_UP");
 			drawPath.lineTo(touchX, touchY);
 			drawCanvas.drawPath(drawPath, drawPaint);
+			animate = true;
 			drawPath.reset();
 			break;
 		default:
@@ -175,5 +193,7 @@ public class MayekDrawView extends View {
 	public boolean hasOverlappingRendering(){
 		return false;
 	}
+
+
 }
 

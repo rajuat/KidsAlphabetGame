@@ -2,7 +2,9 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:gravity="center"
-	android:orientation="vertical" >
+	android:background="@color/g10"
+	android:orientation="horizontal"
+	android:padding="4dp">
 
 	<ImageButton
 		android:id="@+id/small_brush"
