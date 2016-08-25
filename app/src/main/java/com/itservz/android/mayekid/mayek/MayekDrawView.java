@@ -12,7 +12,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.os.Build;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -33,7 +35,7 @@ public class MayekDrawView extends View {
 	//drawing and canvas paint
 	private Paint drawPaint, canvasPaint;
 	//initial color
-	private int paintColor = 0xFF660000, paintAlpha = 255;
+	private int paintColor = 0xFFFF0000, paintAlpha = 230;
 	//canvas
 	private Canvas drawCanvas;
 	//canvas bitmap
@@ -46,9 +48,21 @@ public class MayekDrawView extends View {
 	private boolean animate = false;
 	private float radius = 50;
 	private float touchX, touchY;
+	private TextPaint textPaint;
+	private String mayekName;
+
+	public void setMayekName(String mayekName){
+		this.mayekName = mayekName;
+	}
 
 	public MayekDrawView(Context context, AttributeSet attrs){
 		super(context, attrs);
+		this.context = context;
+		setupDrawing();
+	}
+
+	public MayekDrawView(Context context){
+		super(context);
 		this.context = context;
 		setupDrawing();
 	}
@@ -57,7 +71,7 @@ public class MayekDrawView extends View {
 	private void setupDrawing(){
 
 		//prepare for drawing and setup paint stroke properties
-		brushSize = getResources().getInteger(R.integer.medium_size);
+		brushSize = getResources().getInteger(R.integer.large_size);
 		lastBrushSize = brushSize;
 		drawPath = new Path();
 		drawPaint = new Paint();
@@ -68,6 +82,15 @@ public class MayekDrawView extends View {
 		drawPaint.setStrokeJoin(Paint.Join.ROUND);
 		drawPaint.setStrokeCap(Paint.Cap.ROUND);
 		canvasPaint = new Paint(Paint.DITHER_FLAG);
+
+		textPaint = new TextPaint();
+		textPaint.setColor(Color.YELLOW);
+		textPaint.setShadowLayer(2.0f, 2.0f, 2.0f, Color.GREEN);
+		textPaint.setTextSize(128);
+		textPaint.setTypeface(Typeface.create("Arial", Typeface.BOLD));
+		textPaint.setFakeBoldText(true);
+		textPaint.setAntiAlias(true);
+
 	}
 
 	//size assigned to view
@@ -83,6 +106,8 @@ public class MayekDrawView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
+
+		canvas.drawText(mayekName, ((canvas.getWidth()-256)/2), 148, textPaint);
 		if(animate){
 //			Bitmap star = BitmapFactory.decodeResource(getResources(), R.drawable.star);
 //			canvas.drawBitmap(star, touchX - radius, touchY - radius, drawPaint);

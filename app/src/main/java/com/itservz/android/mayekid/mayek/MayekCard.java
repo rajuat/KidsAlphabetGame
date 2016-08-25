@@ -1,9 +1,11 @@
 package com.itservz.android.mayekid.mayek;
 
+import java.io.Serializable;
+
 /**
  * Created by raju.athokpam on 19-08-2016.
  */
-public class MayekCard {
+public class MayekCard implements Serializable{
     private String title;
     private int res;
     private int picture;

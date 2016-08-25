@@ -1,10 +1,7 @@
 package com.itservz.android.mayekid;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -14,20 +11,26 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.media.MediaPlayer;
-import android.media.AudioManager;
-import android.media.SoundPool;
+
 import com.itservz.android.mayekid.mayek.MayekActivity;
+import com.itservz.android.mayekid.picture.PictureActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private MediaPlayer bgMusic;
     private SoundPoolPlayer soundPoolPlayer;
+    private Intent backgroundMusicService;
+    private boolean soundOnOff = false;
+    private ImageView noticeBoard;
+    private ImageView mayekBoard;
+    private ImageView cardBoard;
+    private ImageView goToDraw;
+    private ImageView goToPaint;
+    private ImageView soundView;
+    private ImageView noticeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,28 +40,83 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        backgroundMusicService = new Intent(this, BackgroundMusicService.class);
+        startService(backgroundMusicService);
+        soundOnOff = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         animate();
-        bgMusic = MediaPlayer.create(getApplicationContext(), R.raw.bgmusic);
-        bgMusic.setLooping(true);
-        bgMusic.start();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
     }
 
-    private void animate(){
-        ImageView mayekBoard = (ImageView)findViewById(R.id.mayekBoardButton);
-        ImageView cardBoard = (ImageView)findViewById(R.id.cartoonBoardButton);
-        ImageView goToDraw = (ImageView)findViewById(R.id.gotodraw);
-        ImageView goToPaint = (ImageView)findViewById(R.id.gotopaint);
-        Animation animation  = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
-        animation.setRepeatCount(Animation.INFINITE);
-        /*mayekBoard.startAnimation(animation);
-        cardBoard.startAnimation(animation);*/
+    @Override
+    protected void onStop() {
+        super.onStop();
+        soundPoolPlayer.release();
+    }
+
+    public void click(View view){
+        if(view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw){
+            soundPoolPlayer.playShortResource(R.raw.whoa);
+            Intent intent = new Intent(this, MayekActivity.class);
+            startActivity(intent);
+        } else if(view.getId() == R.id.cartoonBoardButton|| view.getId() == R.id.gotopaint){
+            soundPoolPlayer.playShortResource(R.raw.whoa);
+            Intent intent = new Intent(this, PictureActivity.class);
+            startActivity(intent);
+        } else if(view.getId() == R.id.noticeboard){
+            soundPoolPlayer.playShortResource(R.raw.whoa);
+            animateNoticeBoard();
+        } else if(view.getId() == R.id.soundOnOff){
+            if(soundOnOff){
+                stopService(backgroundMusicService);
+                soundOnOff = false;
+            } else {
+                startService(backgroundMusicService);
+                soundOnOff = true;
+            }
+
+        }
+    }
+
+    private void clearAnimations() {
+        noticeBoard.clearAnimation();
+        mayekBoard.clearAnimation();
+        cardBoard.clearAnimation();
+        goToDraw.clearAnimation();
+        goToPaint.clearAnimation();
+        soundView.clearAnimation();
+        noticeView.clearAnimation();
+    }
+
+    @Override
+    public void onClick(View view) {
+    }
+
+    private void animate() {
+        mayekBoard = (ImageView) findViewById(R.id.mayekBoardButton);
+        cardBoard = (ImageView) findViewById(R.id.cartoonBoardButton);
+        goToDraw = (ImageView) findViewById(R.id.gotodraw);
+        goToPaint = (ImageView) findViewById(R.id.gotopaint);
+        soundView = (ImageView) findViewById(R.id.soundOnOff);
+        noticeView = (ImageView) findViewById(R.id.noticeboard);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
+        Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
+        slowAnimation.setDuration(1800);
         goToDraw.startAnimation(animation);
         goToPaint.startAnimation(animation);
+
+        mayekBoard.startAnimation(slowAnimation);
+        cardBoard.startAnimation(slowAnimation);
+        soundView.startAnimation(slowAnimation);
+        noticeView.startAnimation(slowAnimation);
     }
 
     private void animateNoticeBoard() {
-        ImageView noticeBoard = (ImageView) findViewById(R.id.noticeboard);
+        noticeBoard = (ImageView) findViewById(R.id.noticeboard);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -66,7 +124,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int originalPos[] = new int[2];
         noticeBoard.getLocationOnScreen(originalPos);
 
-        int xDelta = (dm.widthPixels - noticeBoard.getMeasuredWidth() - originalPos[0]*2) / 2;
+        int xDelta = (dm.widthPixels - noticeBoard.getMeasuredWidth() - originalPos[0] * 2) / 2;
         //int yDelta = (dm.heightPixels - noticeBoard.getMeasuredHeight() - originalPos[1]) / 2;
 
         AnimationSet animSet = new AnimationSet(true);
@@ -76,30 +134,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         TranslateAnimation translate = new TranslateAnimation(xDelta, xDelta, -noticeBoard.getMeasuredHeight(), 0);
         animSet.addAnimation(translate);
-        /*RotateAnimation rotateAnimation = new RotateAnimation(0,360);
-        animSet.addAnimation(rotateAnimation);*/
 
         noticeBoard.startAnimation(animSet);
-    }
-
-    public void goToNoticeBoard(View view){
-        soundPoolPlayer.playShortResource(R.raw.whoa);
-        animateNoticeBoard();
-    }
-
-    public void goToMayek(View view){
-        soundPoolPlayer.playShortResource(R.raw.whoa);
-        Intent intent = new Intent(this, MayekActivity.class);
-        startActivity(intent);
-    }
-
-    public void goToCartoon(View view){
-        soundPoolPlayer.playShortResource(R.raw.whoa);
-        Intent intent = new Intent(this, MayekActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View view) {
     }
 }

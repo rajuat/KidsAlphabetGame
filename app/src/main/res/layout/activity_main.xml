@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/mayekBoardButton"
-        android:onClick="goToMayek"/>
+        android:onClick="click"/>
 
     <ImageView
         android:layout_width="200dp"
@@ -28,7 +28,17 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/cartoonBoardButton"
         android:layout_toStartOf="@+id/cartoonBoardButton"
-        android:onClick="goToNoticeBoard"/>
+        android:onClick="click"/>
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/sound"
+        android:id="@+id/soundOnOff"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="click"/>
 
 
     <ImageView
@@ -38,7 +48,8 @@
         android:id="@+id/gotodraw"
         android:layout_alignTop="@+id/gotopaint"
         android:layout_toRightOf="@+id/mayekBoardButton"
-        android:layout_toEndOf="@+id/mayekBoardButton" />
+        android:layout_toEndOf="@+id/mayekBoardButton"
+        android:onClick="click"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -47,7 +58,8 @@
         android:id="@+id/gotopaint"
         android:layout_alignBottom="@+id/cartoonBoardButton"
         android:layout_toLeftOf="@+id/cartoonBoardButton"
-        android:layout_toStartOf="@+id/cartoonBoardButton" />
+        android:layout_toStartOf="@+id/cartoonBoardButton"
+        android:onClick="click"/>
 
     <ImageView
         android:layout_width="180dp"
@@ -57,6 +69,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/cartoonBoardButton"
-        android:onClick="goToCartoon"/>
+        android:onClick="click"/>
 
 </RelativeLayout>

@@ -17,38 +17,13 @@ import java.util.List;
  * Created by raju.athokpam on 19-08-2016.
  */
 public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.MayekCardViewHolder>{
-    public MayekCardAdapterClickListener mayekCardAdapterClickListener;
+    public MayekListener mayekListener;
     List<MayekCard> mayeks;
     private Context context;
 
-    public static class MayekCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        CardView cv;
-        TextView title;
-        ImageView mayekIcon;
-        ImageView pictureIcon;
-        int imageId;
-        public MayekCardClickListener mayekCardClickListener;
-
-        MayekCardViewHolder(View itemView, MayekCardClickListener mayekCardClickListener) {
-            super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.cardview);
-            title = (TextView)itemView.findViewById(R.id.title);
-            mayekIcon = (ImageView)itemView.findViewById(R.id.mayekicon);
-            pictureIcon = (ImageView)itemView.findViewById(R.id.mayekpic);
-            this.mayekCardClickListener = mayekCardClickListener;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            System.out.println("MayekCardViewHolder constructor onclick" + imageId);
-            mayekCardClickListener.mayekCardOnClick(imageId);
-        }
-    }
-
-    MayekCardAdapter(Context context, List<MayekCard> books, MayekCardAdapterClickListener mayekCardAdapterClickListener){
+        MayekCardAdapter(Context context, List<MayekCard> books, MayekListener mayekListener){
         this.mayeks = books;
-        this.mayekCardAdapterClickListener = mayekCardAdapterClickListener;
+        this.mayekListener = mayekListener;
         this.context = context;
     }
 
@@ -60,14 +35,7 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
     @Override
     public MayekCardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_view_layout, viewGroup, false);
-        MayekCardClickListener listener = new MayekCardClickListener() {
-            @Override
-            public void mayekCardOnClick(int imageId) {
-                System.out.println("onCreateViewHolder onclick" + imageId);
-                mayekCardAdapterClickListener.recyclerViewClick(imageId);
-            }
-        };
-        MayekCardViewHolder bvh = new MayekCardViewHolder(v, listener);
+        MayekCardViewHolder bvh = new MayekCardViewHolder(v, mayekListener);
         return bvh;
     }
 
@@ -96,5 +64,32 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+
+    public static class MayekCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        CardView cv;
+        TextView title;
+        ImageView mayekIcon;
+        ImageView pictureIcon;
+        int imageId;
+        public MayekListener mayekCardClickListener;
+
+        MayekCardViewHolder(View itemView, MayekListener mayekCardClickListener) {
+            super(itemView);
+            cv = (CardView)itemView.findViewById(R.id.cardview);
+            title = (TextView)itemView.findViewById(R.id.title);
+            mayekIcon = (ImageView)itemView.findViewById(R.id.mayekicon);
+            pictureIcon = (ImageView)itemView.findViewById(R.id.mayekpic);
+            this.mayekCardClickListener = mayekCardClickListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            System.out.println("MayekCardViewHolder constructor onclick" + imageId);
+            mayekCardClickListener.recyclerViewClick(imageId);
+        }
+    }
+
+
 }
 

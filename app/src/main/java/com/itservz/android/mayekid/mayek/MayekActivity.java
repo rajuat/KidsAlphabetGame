@@ -3,7 +3,6 @@ package com.itservz.android.mayekid.mayek;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class MayekActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek);
 
-        mayeks = getCards();
+        mayeks = Mayeks.getInstance().getCards();
         imageIds = new int[mayeks.size()];
         for(int i = 0; i < mayeks.size(); i++){
             imageIds[i] = mayeks.get(i).getRes();
@@ -53,31 +53,10 @@ public class MayekActivity extends Activity {
         });
     }
 
-    private List<MayekCard> getCards(){
-        List<MayekCard> cards = new ArrayList<>();
-        cards.add(new MayekCard("KOK", R.drawable.a, R.drawable.kok));
-        cards.add(new MayekCard("SAM", R.drawable.b, R.drawable.kok));
-        cards.add(new MayekCard("LAI", R.drawable.c, R.drawable.kok));
-        cards.add(new MayekCard("MIT", R.drawable.d, R.drawable.kok));
-        cards.add(new MayekCard("PA", R.drawable.e, R.drawable.kok));
-        cards.add(new MayekCard("NA", R.drawable.f, R.drawable.kok));
-        cards.add(new MayekCard("CHIL", R.drawable.g, R.drawable.kok));
-        cards.add(new MayekCard("TIL", R.drawable.h, R.drawable.kok));
-        cards.add(new MayekCard("KHOU", R.drawable.i, R.drawable.kok));
-        cards.add(new MayekCard("NGOU", R.drawable.j, R.drawable.kok));
-        cards.add(new MayekCard("THOU", R.drawable.k, R.drawable.kok));
-        cards.add(new MayekCard("WAI", R.drawable.l, R.drawable.kok));
-        cards.add(new MayekCard("YANG", R.drawable.m, R.drawable.kok));
-        cards.add(new MayekCard("HUK", R.drawable.n, R.drawable.kok));
-        cards.add(new MayekCard("UOON", R.drawable.o, R.drawable.kok));
-        cards.add(new MayekCard("EE", R.drawable.p, R.drawable.kok));
-        cards.add(new MayekCard("PHAM", R.drawable.q, R.drawable.kok));
-        cards.add(new MayekCard("ATIYA", R.drawable.r, R.drawable.kok));
-        return cards;
-    }
 
-    private MayekCardAdapterClickListener getListener(){
-        return new MayekCardAdapterClickListener() {
+
+    private MayekListener getListener(){
+        return new MayekListener() {
             @Override
             public void recyclerViewClick(int imageId) {
                 System.out.println("MayekActivity onclick " + imageId);

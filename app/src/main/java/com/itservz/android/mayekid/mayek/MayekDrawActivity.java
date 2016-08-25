@@ -20,8 +20,14 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,13 +35,18 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
+import com.itservz.android.mayekid.picture.PictureCard;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,9 +60,19 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
     private int imageId;
-    Map<Integer, MayekDrawView> views = new HashMap<Integer, MayekDrawView>();
     private Animation animation;
     private View animatedView;
+    private ViewFlipper viewFlipper;
+    private AnimationSet animSet;
+    private List<MayekCard> mayeks;
+
+    private void setFlipperImage(int res) {
+        System.out.println("Set Filpper Called");
+        MayekDrawView image = new MayekDrawView(getApplicationContext());
+        image.setBackgroundResource(res);
+        image.setTag(res);
+        viewFlipper.addView(image);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +87,16 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
-        //get drawing view
-        currentDrawView = (MayekDrawView)findViewById(R.id.drawing1);
-
-        float alpha = 0.9f;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            currentDrawView.setAlpha(alpha);
+        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        for(int i = 0;  i < imageIds.length; i++){
+            setFlipperImage(imageIds[i]);
         }
-        currentDrawView.setBackgroundResource(imageId);
-        //get the palette and first color button
-        LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
-        currPaint = (ImageButton)paintLayout.getChildAt(0);
-        currentDrawView.setColor(currPaint.getTag().toString());
-        currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
+        init();
 
+
+    }
+
+    private void init() {
         //sizes from dimensions
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
@@ -88,9 +105,6 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         //draw button
         drawBtn = (ImageView)findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
-
-        //set initial size
-        currentDrawView.setBrushSize(mediumBrush);
 
         //erase button
         eraseBtn = (ImageView)findViewById(R.id.erase_btn);
@@ -121,6 +135,41 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         //backSeekBar.setVisibility(SeekBar.INVISIBLE);
 
         animation  = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
+        animSet = new AnimationSet(true);
+        animSet.setFillAfter(true);
+        animSet.setDuration(1500);
+        animSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation);
+        animSet.addAnimation(slowAnimation);
+        initCurrentView();
+    }
+
+    private String getMayekName(int imageId){
+        mayeks = Mayeks.getInstance().getCards();
+        for(MayekCard mayek : mayeks){
+            if(mayek.getRes() == imageId){
+                return mayek.getTitle();
+            }
+        }
+        return "";
+    }
+
+    private void initCurrentView() {
+        currentDrawView = (MayekDrawView) viewFlipper.findViewWithTag(imageId);
+        currentDrawView.setMayekName(getMayekName(imageId));
+        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
+
+        float alpha = 0.9f;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            currentDrawView.setAlpha(alpha);
+        }
+        //currentDrawView.setBackgroundResource(imageId);
+        //get the palette and first color button
+        LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
+        currPaint = (ImageButton)paintLayout.getChildAt(0);
+        currentDrawView.setColor(currPaint.getTag().toString());
+        currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
+        currentDrawView.setBrushSize(mediumBrush);
     }
 
     @Override
@@ -152,6 +201,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
 
     @Override
     public void onClick(View view){
+        currentDrawView.clearAnimation();
         if(animatedView != null) {
             animatedView.clearAnimation();
         }
@@ -317,26 +367,35 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             seekDialog.show();
         }
         else if(view.getId() == R.id.next_btn){
+            System.out.println("nnnnnnnnn");
             animatedView = animate(view);
             for(int i = 0; i < imageIds.length; i++){
-                if(imageId == imageIds[i] && i < imageIds.length-1){
+                if(imageId == imageIds[i]){
                     imageId = imageIds[i+1];
                     break;
                 }
             }
-            currentDrawView.startNew();
-            currentDrawView.setBackgroundResource(imageId);
+            viewFlipper.showNext();
+            currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+            currentDrawView.startAnimation(animSet);
+            currentDrawView.setMayekName(getMayekName(imageId));
         }
         else if(view.getId() == R.id.previous_btn){
-            animatedView = animate(view);
             for(int i = 0; i < imageIds.length; i++){
-                if(imageId == imageIds[i] && i > 0){
+                if(imageId == imageIds[i]){
                     imageId = imageIds[i-1];
                     break;
                 }
             }
+            viewFlipper.showPrevious();
+            currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+            currentDrawView.startAnimation(animSet);
+            currentDrawView.setMayekName(getMayekName(imageId));
+            /*animatedView = animate(view);
+
+            init();
             currentDrawView.startNew();
-            currentDrawView.setBackgroundResource(imageId);
+            currentDrawView.setBackgroundResource(imageId);*/
         }
     }
 
