@@ -36,7 +36,8 @@
             android:name=".BackgroundMusicService"
             android:enabled="true" />
 
-        <activity android:name=".picture.PictureActivity"></activity>
+        <activity android:name=".picture.PictureActivity" />
+        <activity android:name=".picture.PictureDrawActivity"></activity>
     </application>
 
 </manifest>

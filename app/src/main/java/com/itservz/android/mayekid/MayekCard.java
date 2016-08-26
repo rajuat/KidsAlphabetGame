@@ -1,4 +1,4 @@
-package com.itservz.android.mayekid.mayek;
+package com.itservz.android.mayekid;
 
 import java.io.Serializable;
 

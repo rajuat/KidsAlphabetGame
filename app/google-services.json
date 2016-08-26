@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "504222786416",
+    "firebase_url": "https://mayekid-f1285.firebaseio.com",
+    "project_id": "mayekid-f1285",
+    "storage_bucket": "mayekid-f1285.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504222786416:android:d10124dcad033b76",
+        "android_client_info": {
+          "package_name": "com.itservz.android.mayekid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504222786416-etkl0kid074dt29vace68i6snttsi9fj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpNqEOracRcihKby8h6cbnmeCk7XBNoB0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

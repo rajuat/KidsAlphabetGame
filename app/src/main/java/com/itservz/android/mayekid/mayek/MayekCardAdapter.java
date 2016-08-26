@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.itservz.android.mayekid.MayekCard;
 import com.itservz.android.mayekid.R;
 
 import java.util.List;

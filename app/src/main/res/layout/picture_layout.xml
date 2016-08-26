@@ -11,8 +11,7 @@
         android:id="@+id/pictureCardView"
         android:layout_width="192dp"
         android:layout_height="136dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="#EEFF8F"
+        app:cardBackgroundColor="#FFFFFFFF"
         app:cardElevation="4dp"
         android:animateLayoutChanges="true"
         android:backgroundTintMode="src_over">

@@ -1,4 +1,4 @@
-package com.itservz.android.mayekid.mayek;
+package com.itservz.android.mayekid.picture;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,9 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -34,22 +35,18 @@ import android.widget.ViewFlipper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.itservz.android.mayekid.MayekCard;
-import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.UUID;
 
-public class MayekDrawActivity extends Activity implements View.OnClickListener {
+public class PictureDrawActivity extends Activity implements View.OnClickListener {
 
     //custom drawing view
-    private MayekDrawView currentDrawView;
+    private PictureDrawView currentDrawView;
     //buttons
     private ImageView currPaint, drawBtn, eraseBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
     //sizes
@@ -60,13 +57,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     private View animatedView;
     private ViewFlipper viewFlipper;
     private AnimationSet animSet;
-    private List<MayekCard> mayeks;
     private SoundPoolPlayer soundPoolPlayer;
 
     private void setFlipperImage(int res) {
-        System.out.println("Set Filpper Called");
-        MayekDrawView image = new MayekDrawView(getApplicationContext());
-        image.setBackgroundResource(res);
+        PictureDrawView image = new PictureDrawView(getApplicationContext(), res);
         image.setTag(res);
         viewFlipper.addView(image);
     }
@@ -78,10 +72,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_mayek_draw);
+        setContentView(R.layout.activity_picture_draw);
         //ads start
-        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek));
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_picture));
+        AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         //ads end
@@ -89,11 +83,13 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        viewFlipper = (ViewFlipper) findViewById(R.id.pictureFlipper);
         for(int i = 0;  i < imageIds.length; i++){
             setFlipperImage(imageIds[i]);
         }
         init();
+
+
     }
 
     @Override
@@ -152,20 +148,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         initCurrentView();
     }
 
-    private String getMayekName(int imageId){
-        mayeks = Mayeks.getInstance().getCards();
-        for(MayekCard mayek : mayeks){
-            if(mayek.getRes() == imageId){
-                return mayek.getTitle();
-            }
-        }
-        return "";
-    }
-
     private void initCurrentView() {
-        currentDrawView = (MayekDrawView) viewFlipper.findViewWithTag(imageId);
-        currentDrawView.setMayekName(getMayekName(imageId));
+        currentDrawView = (PictureDrawView) viewFlipper.findViewWithTag(imageId);
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
+        currentDrawView.setPicture(imageId);
 
         float alpha = 0.9f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -178,6 +164,16 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         currentDrawView.setBrushSize(mediumBrush);
+        currentDrawView.startAnimation(animSet);
+        setCordinates();
+    }
+
+    private void setCordinates(){
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        currentDrawView.x = (dm.widthPixels - 224*6) / 2;
+        currentDrawView.y = (dm.heightPixels - 224*3) / 2;
+        System.out.println(currentDrawView.x + "x, y " + currentDrawView.y );
     }
 
     @Override
@@ -307,11 +303,12 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
                 public void onClick(DialogInterface dialog, int which){
                     //save drawing
                     currentDrawView.setDrawingCacheEnabled(true);
+                    //currentDrawView.cache
                     //attempt to save
                     /*String imgSaved = MediaStore.Images.Media.insertImage(
                             getContentResolver(), currentDrawView.getDrawingCache(),
                             UUID.randomUUID().toString()+".png", "drawing");*/
-                    String imgSaved = savePicture(currentDrawView.getDrawingCache(),UUID.randomUUID().toString()+".png");
+                    String imgSaved = savePicture(currentDrawView.getDrawingCache(), UUID.randomUUID().toString()+".png");
                     //feedback
                     if(imgSaved!=null){
                         Toast savedToast = Toast.makeText(getApplicationContext(),
@@ -385,9 +382,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
                 if(imageId == imageIds[i] && i < imageIds.length-1){
                     imageId = imageIds[i+1];
             viewFlipper.showNext();
-            currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+            currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
             currentDrawView.startAnimation(animSet);
-            currentDrawView.setMayekName(getMayekName(imageId));
+            currentDrawView.setPicture(imageId);
+                    setCordinates();
                     break;
                 }
             }
@@ -398,13 +396,13 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
                 if(imageId == imageIds[i] && i > 0){
                     imageId = imageIds[i-1];
             viewFlipper.showPrevious();
-            currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+            currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
             currentDrawView.startAnimation(animSet);
-            currentDrawView.setMayekName(getMayekName(imageId));
+            currentDrawView.setPicture(imageId);
+                    setCordinates();
                     break;
                 }
             }
-
         }
     }
 

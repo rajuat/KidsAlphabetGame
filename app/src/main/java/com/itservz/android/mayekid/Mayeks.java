@@ -1,7 +1,5 @@
 package com.itservz.android.mayekid;
 
-import com.itservz.android.mayekid.mayek.MayekCard;
-
 import java.util.ArrayList;
 import java.util.List;
 

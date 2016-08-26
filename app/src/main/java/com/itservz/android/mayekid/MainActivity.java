@@ -58,20 +58,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         soundPoolPlayer.release();
     }
 
-    public void click(View view){
-        if(view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw){
+    public void click(View view) {
+        if (view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             Intent intent = new Intent(this, MayekActivity.class);
+            intent.putExtras(backgroundMusicService);
+
             startActivity(intent);
-        } else if(view.getId() == R.id.cartoonBoardButton|| view.getId() == R.id.gotopaint){
+        } else if (view.getId() == R.id.cartoonBoardButton || view.getId() == R.id.gotopaint) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             Intent intent = new Intent(this, PictureActivity.class);
             startActivity(intent);
-        } else if(view.getId() == R.id.noticeboard){
+        } else if (view.getId() == R.id.noticeboard) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             animateNoticeBoard();
-        } else if(view.getId() == R.id.soundOnOff){
-            if(soundOnOff){
+        } else if (view.getId() == R.id.soundOnOff) {
+            if (soundOnOff) {
                 stopService(backgroundMusicService);
                 soundOnOff = false;
             } else {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.itservz.android.mayekid.R;
+import com.itservz.android.mayekid.MayekCard;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
  * Created by Raju on 8/25/2016.
  */
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureViewHolder>{
-    private List<PictureCard> pictureIds = null;
+    private List<MayekCard> pictureIds = null;
     private PictureAdapterListener listener;
-    public PictureAdapter(Context context, List<PictureCard> pictureIds, PictureAdapterListener listener){
+    public PictureAdapter(Context context, List<MayekCard> pictureIds, PictureAdapterListener listener){
         this.pictureIds = pictureIds;
         this.listener = listener;
     }
@@ -32,8 +33,8 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureV
 
     @Override
     public void onBindViewHolder(PictureViewHolder holder, int position) {
-        holder.drawView.setBackgroundResource(pictureIds.get(position).getImageId());
-        holder.pictureId = pictureIds.get(position).getImageId();
+        holder.drawView.setBackgroundResource(pictureIds.get(position).getPicture());
+        holder.pictureId = pictureIds.get(position).getPicture();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureV
 
         @Override
         public void onClick(View view) {
-            System.out.println("View holder on click");
+            System.out.println("View holder on click pictureid" + pictureId);
             listener.recyclerViewClick(pictureId);
         }
     }
