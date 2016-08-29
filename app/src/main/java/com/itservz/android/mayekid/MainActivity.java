@@ -3,6 +3,7 @@ package com.itservz.android.mayekid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -14,6 +15,7 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import com.itservz.android.mayekid.mayek.MayekActivity;
 import com.itservz.android.mayekid.picture.PictureActivity;
@@ -31,6 +33,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView goToPaint;
     private ImageView soundView;
     private ImageView noticeView;
+    private boolean homeScreen;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,23 +54,53 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onResume();
         animate();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        homeScreen = true;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
+        if(homeScreen){
+            stopService(backgroundMusicService);
+        }
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        stopService(backgroundMusicService);
+    }
+    @Override
+    public void onClick(View view) {
+    }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
     public void click(View view) {
         if (view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
+            homeScreen = false;
             Intent intent = new Intent(this, MayekActivity.class);
-            intent.putExtras(backgroundMusicService);
-
             startActivity(intent);
         } else if (view.getId() == R.id.cartoonBoardButton || view.getId() == R.id.gotopaint) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
+            homeScreen = false;
             Intent intent = new Intent(this, PictureActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.noticeboard) {
@@ -92,10 +126,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         goToPaint.clearAnimation();
         soundView.clearAnimation();
         noticeView.clearAnimation();
-    }
-
-    @Override
-    public void onClick(View view) {
     }
 
     private void animate() {

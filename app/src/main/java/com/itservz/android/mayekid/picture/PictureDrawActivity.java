@@ -153,7 +153,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
         currentDrawView.setPicture(imageId);
 
-        float alpha = 0.9f;
+        float alpha = 1.0f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             currentDrawView.setAlpha(alpha);
         }
@@ -189,7 +189,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
 
         //set erase false
         currentDrawView.setErase(false);
-        currentDrawView.setPaintAlpha(100);
+        currentDrawView.setPaintAlpha(50);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());
 
         if(view != currPaint){

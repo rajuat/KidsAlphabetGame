@@ -35,6 +35,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.itservz.android.mayekid.MayekCard;
+import com.itservz.android.mayekid.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
@@ -51,7 +52,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     //custom drawing view
     private MayekDrawView currentDrawView;
     //buttons
-    private ImageView currPaint, drawBtn, eraseBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
+    private ImageView currPaint, drawBtn, soundBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
     //sizes
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
@@ -62,6 +63,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     private AnimationSet animSet;
     private List<MayekCard> mayeks;
     private SoundPoolPlayer soundPoolPlayer;
+    private MayekSoundPoolPlayer mayekSoundPoolPlayer;
 
     private void setFlipperImage(int res) {
         System.out.println("Set Filpper Called");
@@ -100,12 +102,14 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
     protected void onResume() {
         super.onResume();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
+        mayekSoundPoolPlayer.release();
     }
 
     private void init() {
@@ -119,8 +123,8 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         drawBtn.setOnClickListener(this);
 
         //erase button
-        eraseBtn = (ImageView)findViewById(R.id.erase_btn);
-        eraseBtn.setOnClickListener(this);
+        soundBtn = (ImageView)findViewById(R.id.sound_btn);
+        soundBtn.setOnClickListener(this);
 
         //new button
         newBtn = (ImageView)findViewById(R.id.new_btn);
@@ -254,42 +258,11 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
             //show and wait for user interaction
             brushDialog.show();
         }
-        else if(view.getId()==R.id.erase_btn){
-            soundPoolPlayer.playShortResource(R.raw.click);
+        else if(view.getId()==R.id.sound_btn){
+
             animatedView = animate(view);
-            //switch to erase - choose size
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            brushDialog.setContentView(R.layout.brush_chooser);
-            //size buttons
-            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(smallBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(mediumBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(largeBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            brushDialog.show();
+            mayekSoundPoolPlayer.playShortResource(imageId);
+
         }
         else if(view.getId()==R.id.new_btn){
             soundPoolPlayer.playShortResource(R.raw.click);

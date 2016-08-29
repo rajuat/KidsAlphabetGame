@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import com.itservz.android.mayekid.R;
@@ -19,9 +20,11 @@ import java.util.List;
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureViewHolder>{
     private List<MayekCard> pictureIds = null;
     private PictureAdapterListener listener;
-    public PictureAdapter(Context context, List<MayekCard> pictureIds, PictureAdapterListener listener){
+    Animation animation = null;
+    public PictureAdapter(Context context, List<MayekCard> pictureIds, PictureAdapterListener listener, Animation animation){
         this.pictureIds = pictureIds;
         this.listener = listener;
+        this.animation = animation;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureV
     public void onBindViewHolder(PictureViewHolder holder, int position) {
         holder.drawView.setBackgroundResource(pictureIds.get(position).getPicture());
         holder.pictureId = pictureIds.get(position).getPicture();
+        holder.cardView.startAnimation(animation);
     }
 
     @Override

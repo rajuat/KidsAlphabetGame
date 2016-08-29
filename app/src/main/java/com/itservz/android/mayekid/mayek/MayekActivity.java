@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.itservz.android.mayekid.MayekCard;
+import com.itservz.android.mayekid.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
@@ -21,7 +22,7 @@ public class MayekActivity extends Activity {
 
     private List<MayekCard> mayeks;
     private int[] imageIds = null;
-    private SoundPoolPlayer soundPoolPlayer;
+    private MayekSoundPoolPlayer mayekSoundPoolPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,8 @@ public class MayekActivity extends Activity {
         return new MayekListener() {
             @Override
             public void recyclerViewClick(int imageId) {
-                soundPoolPlayer.playShortResource(R.raw.whoa);
+                //int soundId = Mayeks.getInstance().getSoundIdFromImageId(imageId);
+                mayekSoundPoolPlayer.playShortResource(imageId);
                 Intent intent =  new Intent(getBaseContext(), MayekDrawActivity.class);
                 intent.putExtra("imageIds", imageIds);
                 intent.putExtra("imageId", imageId);
@@ -74,13 +76,13 @@ public class MayekActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        soundPoolPlayer.release();
+        mayekSoundPoolPlayer.release();
     }
 }
 

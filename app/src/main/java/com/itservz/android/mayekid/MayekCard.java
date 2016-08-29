@@ -9,14 +9,17 @@ public class MayekCard implements Serializable{
     private String title;
     private int res;
     private int picture;
+    private int sound;
 
 
-    public MayekCard(String title, int res, int picture) {
+    public MayekCard(String title, int res, int picture, int sound) {
         this.title = title;
         this.res = res;
         this.picture = picture;
-
+        this.sound = sound;
     }
+
+    public int getSound(){ return sound; }
 
     public int getRes() {
         return res;
@@ -30,5 +33,13 @@ public class MayekCard implements Serializable{
         return picture;
     }
 
-
+    @Override
+    public String toString() {
+        return "MayekCard{" +
+                "title='" + title + '\'' +
+                ", res=" + res +
+                ", picture=" + picture +
+                ", sound=" + sound +
+                '}';
+    }
 }

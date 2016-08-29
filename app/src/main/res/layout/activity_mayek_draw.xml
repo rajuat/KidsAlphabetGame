@@ -36,7 +36,7 @@
 
         <!-- color panel -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="left"
             android:layout_weight="1"
@@ -228,7 +228,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:weightSum="8"
+        android:weightSum="5"
         android:orientation="vertical">
 
         <ViewFlipper
@@ -245,7 +245,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_weight="7"
+            android:layout_weight="4"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id_mayek" />
 
@@ -285,6 +285,16 @@
             android:weightSum="5">
 
             <ImageView
+                android:id="@+id/sound_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/erase"
+                android:scaleType="centerInside"
+                android:src="@drawable/sound" />
+
+            <ImageView
                 android:id="@+id/new_btn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -303,16 +313,6 @@
                 android:contentDescription="@string/brush"
                 android:scaleType="centerInside"
                 android:src="@drawable/brush" />
-
-            <ImageView
-                android:id="@+id/erase_btn"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/erase"
-                android:scaleType="centerInside"
-                android:src="@drawable/eraser" />
 
             <ImageView
                 android:id="@+id/opacity_btn"

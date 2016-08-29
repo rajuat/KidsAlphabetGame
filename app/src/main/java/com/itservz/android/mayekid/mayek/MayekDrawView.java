@@ -106,15 +106,7 @@ public class MayekDrawView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
-
-		canvas.drawText(mayekName, ((canvas.getWidth()-256)/2), 148, textPaint);
-		if(animate){
-//			Bitmap star = BitmapFactory.decodeResource(getResources(), R.drawable.star);
-//			canvas.drawBitmap(star, touchX - radius, touchY - radius, drawPaint);
-//			canvas.drawBitmap(star, touchX - radius + 20, touchY - radius - 20, drawPaint);
-//			canvas.drawBitmap(star, touchX - radius + 40, touchY - radius + 10, drawPaint);
-			animate = false;
-		}
+		canvas.drawText(mayekName, ((canvas.getWidth()-224)/2), 120, textPaint);
 	}
 
 	//register user touches as drawing action
@@ -125,25 +117,20 @@ public class MayekDrawView extends View {
 		//respond to down, move and up events
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			System.out.println("MotionEvent.ACTION_DOWN");
 			drawPath.moveTo(touchX, touchY);
 			break;
 		case MotionEvent.ACTION_MOVE:
-			System.out.println("MotionEvent.ACTION_MOVE");
 			drawPath.lineTo(touchX, touchY);
 			break;
 		case MotionEvent.ACTION_UP:
-			System.out.println("MotionEvent.ACTION_UP");
 			drawPath.lineTo(touchX, touchY);
 			drawCanvas.drawPath(drawPath, drawPaint);
 			animate = true;
 			drawPath.reset();
 			break;
 		default:
-			System.out.println("MotionEvent.DEFAULT");
 			return false;
 		}
-		//redraw
 		invalidate();
 		return true;
 

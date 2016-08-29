@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
@@ -39,7 +41,11 @@ public class PictureActivity extends Activity {
         for(int i = 0; i < cards.size(); i++){
             imageIds[i] = cards.get(i).getPicture();
         }
-        adapter = new PictureAdapter(this, cards , getListener());
+
+        Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
+        slowAnimation.setDuration(1800);
+
+        adapter = new PictureAdapter(this, cards , getListener(), slowAnimation);
         recycler.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycler.setLayoutManager(layoutManager);
