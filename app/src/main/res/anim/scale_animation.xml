@@ -3,7 +3,7 @@
     android:interpolator="@android:anim/accelerate_decelerate_interpolator"
     android:duration="1500"
     android:repeatMode="reverse"
-    android:fillAfter="true"
+    android:fillAfter="false"
     android:pivotX="50%"
     android:pivotY="50%"
     android:fromXScale="0.1"

@@ -76,25 +76,24 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         //ads start
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_picture));
         AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
         mAdView.loadAd(adRequest);
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.pictureFlipper);
-        for(int i = 0;  i < imageIds.length; i++){
-            setFlipperImage(imageIds[i]);
-        }
         init();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        viewFlipper = (ViewFlipper) findViewById(R.id.pictureFlipper);
+        for (int i = 0; i < imageIds.length; i++) {
+            setFlipperImage(imageIds[i]);
+        }
+        initCurrentView();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
     }
 
@@ -102,6 +101,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
+
     }
 
     private void init() {
@@ -111,41 +111,41 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         largeBrush = getResources().getInteger(R.integer.large_size);
 
         //draw button
-        drawBtn = (ImageView)findViewById(R.id.draw_btn);
+        drawBtn = (ImageView) findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
         //erase button
-        eraseBtn = (ImageView)findViewById(R.id.erase_btn);
+        eraseBtn = (ImageView) findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
 
         //new button
-        newBtn = (ImageView)findViewById(R.id.new_btn);
+        newBtn = (ImageView) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
         //save button
-        saveBtn = (ImageView)findViewById(R.id.save_btn);
+        saveBtn = (ImageView) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
 
         //opacity
-        opacityBtn = (ImageView)findViewById(R.id.opacity_btn);
+        opacityBtn = (ImageView) findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
         //previous button
-        previousBtn = (ImageView)findViewById(R.id.previous_btn);
+        previousBtn = (ImageView) findViewById(R.id.previous_btn);
         previousBtn.setOnClickListener(this);
 
         //next
-        nextBtn = (ImageView)findViewById(R.id.next_btn);
+        nextBtn = (ImageView) findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
 
-        animation  = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
+        animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
         animSet = new AnimationSet(true);
         animSet.setFillAfter(true);
         animSet.setDuration(1500);
         animSet.setInterpolator(new AccelerateDecelerateInterpolator());
         Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation);
         animSet.addAnimation(slowAnimation);
-        initCurrentView();
+
     }
 
     private void initCurrentView() {
@@ -159,8 +159,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         }
         //currentDrawView.setBackgroundResource(imageId);
         //get the palette and first color button
-        LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
-        currPaint = (ImageButton)paintLayout.getChildAt(0);
+        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
+        currPaint = (ImageButton) paintLayout.getChildAt(0);
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         currentDrawView.setBrushSize(mediumBrush);
@@ -168,12 +168,12 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         setCordinates();
     }
 
-    private void setCordinates(){
+    private void setCordinates() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        currentDrawView.x = (dm.widthPixels - 224*6) / 2;
-        currentDrawView.y = (dm.heightPixels - 224*3) / 2;
-        System.out.println(currentDrawView.x + "x, y " + currentDrawView.y );
+        currentDrawView.x = (dm.widthPixels - 224 * 6) / 2;
+        currentDrawView.y = (dm.heightPixels - 224 * 3) / 2;
+        System.out.println(currentDrawView.x + "x, y " + currentDrawView.y);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
     }
 
     //user clicked paint
-    public void paintClicked(View view){
+    public void paintClicked(View view) {
         //use chosen color
 
         //set erase false
@@ -192,24 +192,24 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         currentDrawView.setPaintAlpha(50);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());
 
-        if(view != currPaint){
-            ImageButton imageButton = (ImageButton)view;
+        if (view != currPaint) {
+            ImageButton imageButton = (ImageButton) view;
             String color = view.getTag().toString();
             currentDrawView.setColor(color);
             //update ui
             imageButton.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
             currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
-            currPaint=(ImageButton)view;
+            currPaint = (ImageButton) view;
         }
     }
 
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
         currentDrawView.clearAnimation();
-        if(animatedView != null) {
+        if (animatedView != null) {
             animatedView.clearAnimation();
         }
-        if(view.getId()==R.id.draw_btn){
+        if (view.getId() == R.id.draw_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             //draw button clicked
@@ -217,8 +217,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
             brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             brushDialog.setContentView(R.layout.brush_chooser);
             //listen for clicks on size buttons
-            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
+            smallBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(false);
@@ -227,8 +227,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                     brushDialog.dismiss();
                 }
             });
-            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
+            mediumBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(false);
@@ -237,8 +237,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                     brushDialog.dismiss();
                 }
             });
-            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
+            largeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(false);
@@ -249,8 +249,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
             });
             //show and wait for user interaction
             brushDialog.show();
-        }
-        else if(view.getId()==R.id.erase_btn){
+        } else if (view.getId() == R.id.erase_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             //switch to erase - choose size
@@ -258,8 +257,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
             brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             brushDialog.setContentView(R.layout.brush_chooser);
             //size buttons
-            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
+            smallBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(true);
@@ -267,8 +266,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                     brushDialog.dismiss();
                 }
             });
-            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
+            mediumBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(true);
@@ -276,8 +275,8 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                     brushDialog.dismiss();
                 }
             });
-            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener(){
+            ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
+            largeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentDrawView.setErase(true);
@@ -286,36 +285,29 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                 }
             });
             brushDialog.show();
-        }
-        else if(view.getId()==R.id.new_btn){
+        } else if (view.getId() == R.id.new_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             currentDrawView.startNew();
 
-        }
-        else if(view.getId()==R.id.save_btn){
+        } else if (view.getId() == R.id.save_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
             saveDialog.setTitle("Save drawing");
             saveDialog.setMessage("Save drawing to device Gallery?");
-            saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
+            saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
                     //save drawing
                     currentDrawView.setDrawingCacheEnabled(true);
-                    //currentDrawView.cache
-                    //attempt to save
-                    /*String imgSaved = MediaStore.Images.Media.insertImage(
-                            getContentResolver(), currentDrawView.getDrawingCache(),
-                            UUID.randomUUID().toString()+".png", "drawing");*/
-                    String imgSaved = savePicture(currentDrawView.getDrawingCache(), UUID.randomUUID().toString()+".png");
-                    //feedback
-                    if(imgSaved!=null){
+                    currentDrawView.buildDrawingCache(true);
+
+                    String imgSaved = savePicture(currentDrawView.getDrawingCache(), UUID.randomUUID().toString() + ".png");
+                    if (imgSaved != null) {
                         Toast savedToast = Toast.makeText(getApplicationContext(),
                                 "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
                         savedToast.show();
-                    }
-                    else{
+                    } else {
                         Toast unsavedToast = Toast.makeText(getApplicationContext(),
                                 "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
                         unsavedToast.show();
@@ -323,14 +315,13 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                     currentDrawView.destroyDrawingCache();
                 }
             });
-            saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
+            saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }
             });
             saveDialog.show();
-        }
-        else if(view.getId()==R.id.opacity_btn){
+        } else if (view.getId() == R.id.opacity_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             //launch opacity chooser
@@ -338,20 +329,20 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
             seekDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             seekDialog.setContentView(R.layout.opacity_chooser);
             //get ui elements
-            final TextView seekTxt = (TextView)seekDialog.findViewById(R.id.opq_txt);
+            final TextView seekTxt = (TextView) seekDialog.findViewById(R.id.opq_txt);
             //R.color.g1, R.color.g2, R.color.g3, R.color.g4, R.color.g5, R.color.g6, R.color.g7, R.color.g8, R.color.g9, R.color.g10
             LinearGradient test = new LinearGradient(0.f, 0.f, 700.f, 0.0f,
-                    new int[] { 0xFF000000, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF, 0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF},
+                    new int[]{0xFF000000, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF, 0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF},
                     null, Shader.TileMode.CLAMP);
             ShapeDrawable shape = new ShapeDrawable(new RectShape());
             shape.getPaint().setShader(test);
-            final SeekBar seekOpq = (SeekBar)seekDialog.findViewById(R.id.opacity_seek);
-            seekOpq.setProgressDrawable( (Drawable)shape );
+            final SeekBar seekOpq = (SeekBar) seekDialog.findViewById(R.id.opacity_seek);
+            seekOpq.setProgressDrawable((Drawable) shape);
             //set max
             seekOpq.setMax(100);
             //show current level
             int currLevel = currentDrawView.getPaintAlpha();
-            seekTxt.setText(currLevel+"%");
+            seekTxt.setText(currLevel + "%");
             seekOpq.setProgress(currLevel);
 
             //update as user interacts
@@ -359,7 +350,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
 
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    seekTxt.setText(Integer.toString(progress)+"%");
+                    seekTxt.setText(Integer.toString(progress) + "%");
                     currentDrawView.setPaintAlpha(seekOpq.getProgress());
                     //
                 }
@@ -369,36 +360,35 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
                 }
 
                 @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {}
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
 
             });
             //show dialog
             seekDialog.show();
-        }
-        else if(view.getId() == R.id.next_btn){
+        } else if (view.getId() == R.id.next_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
-            for(int i = 0; i < imageIds.length; i++){
-                if(imageId == imageIds[i] && i < imageIds.length-1){
-                    imageId = imageIds[i+1];
-            viewFlipper.showNext();
-            currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-            currentDrawView.startAnimation(animSet);
-            currentDrawView.setPicture(imageId);
+            for (int i = 0; i < imageIds.length; i++) {
+                if (imageId == imageIds[i] && i < imageIds.length - 1) {
+                    imageId = imageIds[i + 1];
+                    viewFlipper.showNext();
+                    currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
+                    currentDrawView.startAnimation(animSet);
+                    currentDrawView.setPicture(imageId);
                     setCordinates();
                     break;
                 }
             }
-        }
-        else if(view.getId() == R.id.previous_btn){
+        } else if (view.getId() == R.id.previous_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
-            for(int i = 0; i < imageIds.length; i++){
-                if(imageId == imageIds[i] && i > 0){
-                    imageId = imageIds[i-1];
-            viewFlipper.showPrevious();
-            currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-            currentDrawView.startAnimation(animSet);
-            currentDrawView.setPicture(imageId);
+            for (int i = 0; i < imageIds.length; i++) {
+                if (imageId == imageIds[i] && i > 0) {
+                    imageId = imageIds[i - 1];
+                    viewFlipper.showPrevious();
+                    currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
+                    currentDrawView.startAnimation(animSet);
+                    currentDrawView.setPicture(imageId);
                     setCordinates();
                     break;
                 }
@@ -407,7 +397,7 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
     }
 
 
-    private View animate(View imageView){
+    private View animate(View imageView) {
         imageView.startAnimation(animation);
         return imageView;
     }
@@ -434,5 +424,4 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         }
         return s;
     }
-
 }

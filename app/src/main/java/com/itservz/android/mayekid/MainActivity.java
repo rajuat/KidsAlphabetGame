@@ -58,6 +58,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+    }
+    @Override
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
@@ -71,6 +75,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
         stopService(backgroundMusicService);
     }
+
     @Override
     public void onClick(View view) {
     }
@@ -92,6 +97,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }, 2000);
     }
+
     public void click(View view) {
         if (view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw) {
             soundPoolPlayer.playShortResource(R.raw.whoa);

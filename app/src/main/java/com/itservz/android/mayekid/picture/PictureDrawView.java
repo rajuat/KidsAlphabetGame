@@ -24,6 +24,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.itservz.android.mayekid.BitmapHelper;
 import com.itservz.android.mayekid.R;
 
 
@@ -84,7 +85,7 @@ public class PictureDrawView extends View {
 		drawPaint.setStrokeCap(Paint.Cap.ROUND);
 		canvasPaint = new Paint(Paint.DITHER_FLAG);
 
-		Bitmap immutableBmp = BitmapFactory.decodeResource(getResources(), picture);
+		Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), picture, 224, 224);
 		pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
 		//pictureBitMap = Bitmap.createScaledBitmap(myBitmap, 640, 460, false);
 	}

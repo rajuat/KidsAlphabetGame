@@ -1,14 +1,17 @@
 package com.itservz.android.mayekid.mayek;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.itservz.android.mayekid.BitmapHelper;
 import com.itservz.android.mayekid.MayekCard;
 import com.itservz.android.mayekid.R;
 
@@ -44,21 +47,11 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
     public void onBindViewHolder(MayekCardViewHolder mayekCardViewHolder, int i) {
         mayekCardViewHolder.imageId = mayeks.get(i).getRes();
         mayekCardViewHolder.title.setText(mayeks.get(i).getTitle());
-        System.out.println("image identifier " + mayekCardViewHolder.imageId);
-        mayekCardViewHolder.mayekIcon.setImageResource(mayekCardViewHolder.imageId);
-        mayekCardViewHolder.pictureIcon.setImageResource(mayeks.get(i).getPicture());
+        Bitmap imageRes =  BitmapHelper.decodeSampledBitmapFromResource(context.getResources(), mayekCardViewHolder.imageId, 100, 100);
+        mayekCardViewHolder.mayekIcon.setImageBitmap(imageRes);
+        Bitmap pictureRes =  BitmapHelper.decodeSampledBitmapFromResource(context.getResources(), mayeks.get(i).getPicture(), 100, 100);
+        mayekCardViewHolder.pictureIcon.setImageBitmap(pictureRes);
         mayekCardViewHolder.cv.setBackgroundResource(R.drawable.board);
-
-
-        //perhaps to enable clink on card
-        /*mayekCardViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //implement onClick
-                System.out.println("Clicked");
-            }
-        });*/
-
     }
 
     @Override
@@ -86,7 +79,7 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
 
         @Override
         public void onClick(View view) {
-            System.out.println("MayekCardViewHolder constructor onclick" + imageId);
+            Log.d("onClick", "MayekCardViewHolder constructor onclick" + imageId);
             mayekCardClickListener.recyclerViewClick(imageId);
         }
     }

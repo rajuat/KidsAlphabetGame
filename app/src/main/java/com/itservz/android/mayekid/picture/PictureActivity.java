@@ -38,14 +38,14 @@ public class PictureActivity extends Activity {
         recycler = (RecyclerView) findViewById(R.id.pictureRecyclerView);
         cards = Mayeks.getInstance().getCards();
         imageIds = new int[cards.size()];
-        for(int i = 0; i < cards.size(); i++){
+        for (int i = 0; i < cards.size(); i++) {
             imageIds[i] = cards.get(i).getPicture();
         }
 
         Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
         slowAnimation.setDuration(1800);
 
-        adapter = new PictureAdapter(this, cards , getListener(), slowAnimation);
+        adapter = new PictureAdapter(this, cards, getListener(), slowAnimation);
         recycler.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycler.setLayoutManager(layoutManager);
@@ -68,7 +68,7 @@ public class PictureActivity extends Activity {
             @Override
             public void recyclerViewClick(int imageId) {
                 soundPoolPlayer.playShortResource(R.raw.whoa);
-                Intent intent =  new Intent(getBaseContext(), PictureDrawActivity.class);
+                Intent intent = new Intent(getBaseContext(), PictureDrawActivity.class);
                 intent.putExtra("imageIds", imageIds);
                 intent.putExtra("imageId", imageId);
                 startActivity(intent);

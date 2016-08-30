@@ -1,6 +1,7 @@
 package com.itservz.android.mayekid.picture;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
+import com.itservz.android.mayekid.BitmapHelper;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.MayekCard;
 
@@ -20,11 +22,13 @@ import java.util.List;
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureViewHolder>{
     private List<MayekCard> pictureIds = null;
     private PictureAdapterListener listener;
-    Animation animation = null;
+    private Animation animation = null;
+    private Context context = null;
     public PictureAdapter(Context context, List<MayekCard> pictureIds, PictureAdapterListener listener, Animation animation){
         this.pictureIds = pictureIds;
         this.listener = listener;
         this.animation = animation;
+        this.context = context;
     }
 
     @Override
@@ -36,7 +40,8 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureV
 
     @Override
     public void onBindViewHolder(PictureViewHolder holder, int position) {
-        holder.drawView.setBackgroundResource(pictureIds.get(position).getPicture());
+        Bitmap pictureRes = BitmapHelper.decodeSampledBitmapFromResource(context.getResources(), pictureIds.get(position).getPicture(), 108, 100);
+        holder.drawView.setImageBitmap(pictureRes);
         holder.pictureId = pictureIds.get(position).getPicture();
         holder.cardView.startAnimation(animation);
     }
@@ -61,7 +66,6 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureV
 
         @Override
         public void onClick(View view) {
-            System.out.println("View holder on click pictureid" + pictureId);
             listener.recyclerViewClick(pictureId);
         }
     }

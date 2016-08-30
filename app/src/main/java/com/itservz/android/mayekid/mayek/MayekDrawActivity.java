@@ -84,7 +84,7 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         //ads start
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek));
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
         mAdView.loadAd(adRequest);
         //ads end
         Intent intent = getIntent();
