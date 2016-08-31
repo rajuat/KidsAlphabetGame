@@ -49,7 +49,7 @@ public class PictureDrawView extends View {
 	private float radius = 50;
 	private float touchX, touchY;
 	private int picture;
-	private Bitmap pictureBitMap;
+	Bitmap pictureBitMap;
 	int x,y;
 
 	public void setPicture(int picture){
@@ -71,7 +71,6 @@ public class PictureDrawView extends View {
 
 	//setup drawing
 	private void setupDrawing(){
-
 		//prepare for drawing and setup paint stroke properties
 		brushSize = getResources().getInteger(R.integer.large_size);
 		lastBrushSize = brushSize;
@@ -84,10 +83,6 @@ public class PictureDrawView extends View {
 		drawPaint.setStrokeJoin(Paint.Join.ROUND);
 		drawPaint.setStrokeCap(Paint.Cap.ROUND);
 		canvasPaint = new Paint(Paint.DITHER_FLAG);
-
-		Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), picture, 224, 224);
-		pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
-		//pictureBitMap = Bitmap.createScaledBitmap(myBitmap, 640, 460, false);
 	}
 
 	//size assigned to view

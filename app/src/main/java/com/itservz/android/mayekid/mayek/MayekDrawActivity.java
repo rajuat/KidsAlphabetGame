@@ -68,7 +68,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
     private MayekSoundPoolPlayer mayekSoundPoolPlayer;
 
     private void setFlipperImage(int res) {
-        System.out.println("Set Filpper Called");
         MayekDrawView image = new MayekDrawView(getApplicationContext());
         image.setBackgroundResource(res);
         image.setTag(res);
@@ -78,9 +77,7 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //turn title off
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
         //ads start
@@ -195,16 +192,10 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    //user clicked paint
     public void paintClicked(View view){
-        //use chosen color
-
-        //set erase false
         currentDrawView.setErase(false);
         currentDrawView.setPaintAlpha(100);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());

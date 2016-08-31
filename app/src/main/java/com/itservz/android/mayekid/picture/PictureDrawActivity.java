@@ -37,6 +37,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.itservz.android.mayekid.BackgroundMusicFlag;
 import com.itservz.android.mayekid.BaseActivity;
+import com.itservz.android.mayekid.BitmapHelper;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
 
@@ -70,9 +71,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //turn title off
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_picture_draw);
         //ads start
@@ -161,11 +160,14 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
         currentDrawView.setPicture(imageId);
 
+        Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
+        currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
+        setCordinates(immutableBmp);
+
         float alpha = 1.0f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             currentDrawView.setAlpha(alpha);
         }
-        //currentDrawView.setBackgroundResource(imageId);
         //get the palette and first color button
         LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
         currPaint = (ImageButton) paintLayout.getChildAt(0);
@@ -173,29 +175,23 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         currentDrawView.setBrushSize(mediumBrush);
         currentDrawView.startAnimation(animSet);
-        setCordinates();
     }
 
-    private void setCordinates() {
+    private void setCordinates(Bitmap immutableBmp) {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        currentDrawView.x = (dm.widthPixels - 224 * 6) / 2;
-        currentDrawView.y = (dm.heightPixels - 224 * 3) / 2;
-        System.out.println(currentDrawView.x + "x, y " + currentDrawView.y);
+        int originalPos[] = new int[2];
+        currentDrawView.getLocationOnScreen(originalPos);
+        currentDrawView.x = (dm.widthPixels - immutableBmp.getWidth()- originalPos[0] * 2 ) / 2;
+        currentDrawView.y = (dm.heightPixels - immutableBmp.getHeight()- originalPos[1] * 2 ) / 2;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    //user clicked paint
     public void paintClicked(View view) {
-        //use chosen color
-
-        //set erase false
         currentDrawView.setErase(false);
         currentDrawView.setPaintAlpha(50);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());
@@ -384,7 +380,9 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                     currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
                     currentDrawView.startAnimation(animSet);
                     currentDrawView.setPicture(imageId);
-                    setCordinates();
+                    Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
+                    currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
+                    setCordinates(immutableBmp);
                     break;
                 }
             }
@@ -397,7 +395,9 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                     currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
                     currentDrawView.startAnimation(animSet);
                     currentDrawView.setPicture(imageId);
-                    setCordinates();
+                    Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
+                    currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
+                    setCordinates(immutableBmp);
                     break;
                 }
             }

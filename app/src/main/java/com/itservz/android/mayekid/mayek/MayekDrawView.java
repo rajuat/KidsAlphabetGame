@@ -30,21 +30,13 @@ import com.itservz.android.mayekid.R;
 
 public class MayekDrawView extends View {
 	private Context context;
-	//drawing path
 	private Path drawPath;
-	//drawing and canvas paint
 	private Paint drawPaint, canvasPaint;
-	//initial color
 	private int paintColor = 0xFFFF0000, paintAlpha = 230;
-	//canvas
 	private Canvas drawCanvas;
-	//canvas bitmap
 	private Bitmap canvasBitmap;
-	//brush sizes
 	private float brushSize, lastBrushSize;
-	//erase flag
 	private boolean erase=false;
-	//animate
 	private boolean animate = false;
 	private float radius = 50;
 	private float touchX, touchY;
@@ -67,10 +59,7 @@ public class MayekDrawView extends View {
 		setupDrawing();
 	}
 
-	//setup drawing
 	private void setupDrawing(){
-
-		//prepare for drawing and setup paint stroke properties
 		brushSize = getResources().getInteger(R.integer.large_size);
 		lastBrushSize = brushSize;
 		drawPath = new Path();
@@ -93,7 +82,6 @@ public class MayekDrawView extends View {
 
 	}
 
-	//size assigned to view
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
@@ -101,20 +89,17 @@ public class MayekDrawView extends View {
 		drawCanvas = new Canvas(canvasBitmap);
 	}
 
-	//draw the view - will be called after touch event
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
-		canvas.drawText(mayekName, ((canvas.getWidth()-224)/2), 120, textPaint);
+		canvas.drawText(mayekName, ((canvas.getWidth()-224)/2), 112, textPaint);
 	}
 
-	//register user touches as drawing action
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		touchX = event.getX();
 		touchY = event.getY();
-		//respond to down, move and up events
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			drawPath.moveTo(touchX, touchY);
@@ -136,31 +121,22 @@ public class MayekDrawView extends View {
 
 	}
 
-	//update color
 	public void setColor(String newColor){
 		invalidate();
-		//check whether color value or pattern name
 		if(newColor.startsWith("#")){
 			paintColor = Color.parseColor(newColor);
 			drawPaint.setColor(paintColor);
 			drawPaint.setShader(null);
 		}
 		else{
-			//pattern
-			int patternID = getResources().getIdentifier(
-					newColor, "drawable", "com.itservz.android.mayekid");
-			//decode 
+			int patternID = getResources().getIdentifier(newColor, "drawable", "com.itservz.android.mayekid");
 			Bitmap patternBMP = BitmapFactory.decodeResource(getResources(), patternID);
-			//create shader
-			BitmapShader patternBMPshader = new BitmapShader(patternBMP,
-					Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-			//color and shader
+			BitmapShader patternBMPshader = new BitmapShader(patternBMP, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
 			drawPaint.setColor(0xFFFFFFFF);
 			drawPaint.setShader(patternBMPshader);
 		}
 	}
 
-	//set brush size
 	public void setBrushSize(float newSize){
 		float pixelAmount = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				newSize, getResources().getDisplayMetrics());
@@ -168,33 +144,29 @@ public class MayekDrawView extends View {
 		drawPaint.setStrokeWidth(brushSize);
 	}
 
-	//get and set last brush size
 	public void setLastBrushSize(float lastSize){
 		lastBrushSize=lastSize;
 	}
+
 	public float getLastBrushSize(){
 		return lastBrushSize;
 	}
 
-	//set erase true or false
 	public void setErase(boolean isErase){
 		erase=isErase;
 		if(erase) drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 		else drawPaint.setXfermode(null);
 	}
 
-	//start new drawing
 	public void startNew(){
 		drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
 		invalidate();
 	}
 
-	//return current alpha
 	public int getPaintAlpha(){
 		return Math.round((float)paintAlpha/255*100);
 	}
 
-	//set alpha
 	public void setPaintAlpha(int newAlpha){
 		paintAlpha= Math.round((float)newAlpha/100*255);
 		drawPaint.setColor(paintColor);
@@ -205,7 +177,6 @@ public class MayekDrawView extends View {
 	public boolean hasOverlappingRendering(){
 		return false;
 	}
-
 
 }
 
