@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.itservz.android.mayekid.BackgroundMusicFlag;
+import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.MayekCard;
@@ -19,7 +21,7 @@ import com.itservz.android.mayekid.SoundPoolPlayer;
 
 import java.util.List;
 
-public class PictureActivity extends Activity {
+public class PictureActivity extends BaseActivity {
 
     private RecyclerView recycler;
     private PictureAdapter adapter;
@@ -67,6 +69,7 @@ public class PictureActivity extends Activity {
         return new PictureAdapterListener() {
             @Override
             public void recyclerViewClick(int imageId) {
+                wentToAnotherActivity = true;
                 soundPoolPlayer.playShortResource(R.raw.whoa);
                 Intent intent = new Intent(getBaseContext(), PictureDrawActivity.class);
                 intent.putExtra("imageIds", imageIds);
@@ -80,12 +83,25 @@ public class PictureActivity extends Activity {
     protected void onResume() {
         super.onResume();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            startService(backgroundMusicService);
+        }
+        wentToAnotherActivity = false;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            stopService(backgroundMusicService);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        wentToAnotherActivity = true;
     }
 
 

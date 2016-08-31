@@ -35,6 +35,8 @@ import android.widget.ViewFlipper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.itservz.android.mayekid.BackgroundMusicFlag;
+import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
 
@@ -43,7 +45,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public class PictureDrawActivity extends Activity implements View.OnClickListener {
+public class PictureDrawActivity extends BaseActivity implements View.OnClickListener {
 
     //custom drawing view
     private PictureDrawView currentDrawView;
@@ -95,13 +97,19 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         }
         initCurrentView();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            startService(backgroundMusicService);
+        }
+        wentToAnotherActivity = false;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
-
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            stopService(backgroundMusicService);
+        }
     }
 
     private void init() {
@@ -396,6 +404,11 @@ public class PictureDrawActivity extends Activity implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        wentToAnotherActivity = true;
+    }
 
     private View animate(View imageView) {
         imageView.startAnimation(animation);

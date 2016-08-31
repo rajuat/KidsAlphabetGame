@@ -20,12 +20,9 @@ import android.widget.Toast;
 import com.itservz.android.mayekid.mayek.MayekActivity;
 import com.itservz.android.mayekid.picture.PictureActivity;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private MediaPlayer bgMusic;
     private SoundPoolPlayer soundPoolPlayer;
-    private Intent backgroundMusicService;
-    private boolean soundOnOff = false;
     private ImageView noticeBoard;
     private ImageView mayekBoard;
     private ImageView cardBoard;
@@ -33,20 +30,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView goToPaint;
     private ImageView soundView;
     private ImageView noticeView;
-    private boolean homeScreen;
     private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //turn title off
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //set to full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        backgroundMusicService = new Intent(this, BackgroundMusicService.class);
         startService(backgroundMusicService);
-        soundOnOff = true;
+        BackgroundMusicFlag.getInstance().setSoundOnOff(true);
     }
 
     @Override
@@ -54,7 +47,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onResume();
         animate();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
-        homeScreen = true;
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            startService(backgroundMusicService);
+        }
+        wentToAnotherActivity = false;
     }
 
     @Override
@@ -65,7 +61,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onStop() {
         super.onStop();
         soundPoolPlayer.release();
-        if(homeScreen){
+        if(!wentToAnotherActivity){
             stopService(backgroundMusicService);
         }
     }
@@ -101,24 +97,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void click(View view) {
         if (view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
-            homeScreen = false;
+            wentToAnotherActivity = true;
             Intent intent = new Intent(this, MayekActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.cartoonBoardButton || view.getId() == R.id.gotopaint) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
-            homeScreen = false;
+            wentToAnotherActivity = true;
             Intent intent = new Intent(this, PictureActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.noticeboard) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             animateNoticeBoard();
         } else if (view.getId() == R.id.soundOnOff) {
-            if (soundOnOff) {
+            if (BackgroundMusicFlag.getInstance().isSoundOnOff()) {
                 stopService(backgroundMusicService);
-                soundOnOff = false;
+                BackgroundMusicFlag.getInstance().setSoundOnOff(false);
             } else {
                 startService(backgroundMusicService);
-                soundOnOff = true;
+                BackgroundMusicFlag.getInstance().setSoundOnOff(true);
             }
 
         }

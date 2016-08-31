@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.itservz.android.mayekid.BackgroundMusicFlag;
+import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.MayekCard;
 import com.itservz.android.mayekid.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.Mayeks;
@@ -18,7 +22,7 @@ import com.itservz.android.mayekid.SoundPoolPlayer;
 
 import java.util.List;
 
-public class MayekActivity extends Activity {
+public class MayekActivity extends BaseActivity {
 
     private List<MayekCard> mayeks;
     private int[] imageIds = null;
@@ -62,6 +66,7 @@ public class MayekActivity extends Activity {
             @Override
             public void recyclerViewClick(int imageId) {
                 //int soundId = Mayeks.getInstance().getSoundIdFromImageId(imageId);
+                wentToAnotherActivity = true;
                 mayekSoundPoolPlayer.playShortResource(imageId);
                 Intent intent =  new Intent(getBaseContext(), MayekDrawActivity.class);
                 intent.putExtra("imageIds", imageIds);
@@ -75,12 +80,25 @@ public class MayekActivity extends Activity {
     protected void onResume() {
         super.onResume();
         mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            startService(backgroundMusicService);
+        }
+        wentToAnotherActivity = false;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mayekSoundPoolPlayer.release();
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            stopService(backgroundMusicService);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        wentToAnotherActivity = true;
     }
 }
 

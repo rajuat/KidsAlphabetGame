@@ -34,6 +34,8 @@ import android.widget.ViewFlipper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.itservz.android.mayekid.BackgroundMusicFlag;
+import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.MayekCard;
 import com.itservz.android.mayekid.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.Mayeks;
@@ -47,7 +49,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 
-public class MayekDrawActivity extends Activity implements View.OnClickListener {
+public class MayekDrawActivity extends BaseActivity implements View.OnClickListener {
 
     //custom drawing view
     private MayekDrawView currentDrawView;
@@ -103,6 +105,10 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         super.onResume();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
         mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            startService(backgroundMusicService);
+        }
+        wentToAnotherActivity = false;
     }
 
     @Override
@@ -110,6 +116,9 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         super.onStop();
         soundPoolPlayer.release();
         mayekSoundPoolPlayer.release();
+        if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
+            stopService(backgroundMusicService);
+        }
     }
 
     private void init() {
@@ -381,6 +390,11 @@ public class MayekDrawActivity extends Activity implements View.OnClickListener 
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        wentToAnotherActivity = true;
+    }
 
     private View animate(View imageView){
         imageView.startAnimation(animation);
