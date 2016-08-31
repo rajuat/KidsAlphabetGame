@@ -21,12 +21,10 @@ public class SoundPoolPlayer {
 
     public void playShortResource(int piResource) {
         int iSoundId = (Integer) mSounds.get(piResource);
-        this.mShortPlayer.play(iSoundId, 0.49f, 0.49f, 0, 0, 1);
+        this.mShortPlayer.play(iSoundId, 0.33f, 0.33f, 0, 0, 1);
     }
 
-    // Cleanup
     public void release() {
-        // Cleanup
         this.mShortPlayer.release();
         this.mShortPlayer = null;
     }
