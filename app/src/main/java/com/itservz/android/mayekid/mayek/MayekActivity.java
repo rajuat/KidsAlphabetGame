@@ -41,7 +41,6 @@ public class MayekActivity extends BaseActivity {
             imageIds[i] = mayeks.get(i).getRes();
         }
         RecyclerView recycler = (RecyclerView)findViewById(R.id.recyclerview);
-        //recycler.setHasFixedSize(true);
         MayekCardAdapter mayekCardAdapter = new MayekCardAdapter(this, mayeks, getListener());
         recycler.setAdapter(mayekCardAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
@@ -65,7 +64,6 @@ public class MayekActivity extends BaseActivity {
         return new MayekListener() {
             @Override
             public void recyclerViewClick(int imageId) {
-                //int soundId = Mayeks.getInstance().getSoundIdFromImageId(imageId);
                 wentToAnotherActivity = true;
                 mayekSoundPoolPlayer.playShortResource(imageId);
                 Intent intent =  new Intent(getBaseContext(), MayekDrawActivity.class);

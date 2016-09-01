@@ -79,7 +79,6 @@ public class MayekCardAdapter extends RecyclerView.Adapter<MayekCardAdapter.Maye
 
         @Override
         public void onClick(View view) {
-            Log.d("onClick", "MayekCardViewHolder constructor onclick" + imageId);
             mayekCardClickListener.recyclerViewClick(imageId);
         }
     }

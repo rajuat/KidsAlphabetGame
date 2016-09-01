@@ -40,9 +40,7 @@ public class MayekSoundPoolPlayer {
         this.mShortPlayer.play(iSoundId, 0.99f, 0.99f, 0, 0, 1);
     }
 
-    // Cleanup
     public void release() {
-        // Cleanup
         this.mShortPlayer.release();
         this.mShortPlayer = null;
     }

@@ -51,11 +51,8 @@ import java.util.UUID;
 
 public class MayekDrawActivity extends BaseActivity implements View.OnClickListener {
 
-    //custom drawing view
     private MayekDrawView currentDrawView;
-    //buttons
     private ImageView currPaint, drawBtn, soundBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
-    //sizes
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
     private int imageId;
@@ -181,7 +178,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             currentDrawView.setAlpha(alpha);
         }
-        //currentDrawView.setBackgroundResource(imageId);
         //get the palette and first color button
         LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
         currPaint = (ImageButton)paintLayout.getChildAt(0);
@@ -220,11 +216,9 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         if(view.getId()==R.id.draw_btn){
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
-            //draw button clicked
             final Dialog brushDialog = new Dialog(this);
             brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             brushDialog.setContentView(R.layout.brush_chooser);
-            //listen for clicks on size buttons
             ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
             smallBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -255,7 +249,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
                     brushDialog.dismiss();
                 }
             });
-            //show and wait for user interaction
             brushDialog.show();
         }
         else if(view.getId()==R.id.sound_btn){
@@ -278,14 +271,8 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             saveDialog.setMessage("Save drawing to device Gallery?");
             saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                 public void onClick(DialogInterface dialog, int which){
-                    //save drawing
                     currentDrawView.setDrawingCacheEnabled(true);
-                    //attempt to save
-                    /*String imgSaved = MediaStore.Images.Media.insertImage(
-                            getContentResolver(), currentDrawView.getDrawingCache(),
-                            UUID.randomUUID().toString()+".png", "drawing");*/
                     String imgSaved = savePicture(currentDrawView.getDrawingCache(),UUID.randomUUID().toString()+".png");
-                    //feedback
                     if(imgSaved!=null){
                         Toast savedToast = Toast.makeText(getApplicationContext(),
                                 "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
@@ -323,21 +310,17 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             shape.getPaint().setShader(test);
             final SeekBar seekOpq = (SeekBar)seekDialog.findViewById(R.id.opacity_seek);
             seekOpq.setProgressDrawable( (Drawable)shape );
-            //set max
             seekOpq.setMax(100);
-            //show current level
             int currLevel = currentDrawView.getPaintAlpha();
             seekTxt.setText(currLevel+"%");
             seekOpq.setProgress(currLevel);
 
-            //update as user interacts
             seekOpq.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     seekTxt.setText(Integer.toString(progress)+"%");
                     currentDrawView.setPaintAlpha(seekOpq.getProgress());
-                    //
                 }
 
                 @Override
@@ -348,7 +331,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
                 public void onStopTrackingTouch(SeekBar seekBar) {}
 
             });
-            //show dialog
             seekDialog.show();
         }
         else if(view.getId() == R.id.next_btn){
@@ -401,12 +383,10 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         try {
             fOut = new FileOutputStream(f);
 
-            /**Compress image**/
             bm.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
             fOut.flush();
             fOut.close();
 
-            /**Update image to gallery**/
             s = MediaStore.Images.Media.insertImage(getContentResolver(),
                     f.getAbsolutePath(), f.getName(), f.getName());
         } catch (Exception e) {

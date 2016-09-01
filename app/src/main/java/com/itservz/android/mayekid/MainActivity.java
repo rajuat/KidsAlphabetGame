@@ -159,7 +159,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         noticeBoard.getLocationOnScreen(originalPos);
 
         int xDelta = (dm.widthPixels - noticeBoard.getMeasuredWidth() - originalPos[0] * 2) / 2;
-        //int yDelta = (dm.heightPixels - noticeBoard.getMeasuredHeight() - originalPos[1]) / 2;
 
         AnimationSet animSet = new AnimationSet(true);
         animSet.setFillAfter(true);

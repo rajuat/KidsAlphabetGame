@@ -45,11 +45,9 @@ public class Mayeks {
     public int getSoundIdFromImageId(int imageId){
         for(MayekCard card : cards){
             if(card.getRes() == imageId){
-                System.out.println("cards" + card.toString());
                 return card.getSound();
             }
         }
-        System.out.println("no image found");
         return 0;
     }
 }
