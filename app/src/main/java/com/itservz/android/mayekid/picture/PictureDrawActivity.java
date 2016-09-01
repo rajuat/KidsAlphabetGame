@@ -94,6 +94,8 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         for (int i = 0; i < imageIds.length; i++) {
             setFlipperImage(imageIds[i]);
         }
+        currentDrawView = (PictureDrawView) viewFlipper.findViewWithTag(imageId);
+        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
         initCurrentView();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
         if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
@@ -149,10 +151,8 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initCurrentView() {
-        currentDrawView = (PictureDrawView) viewFlipper.findViewWithTag(imageId);
-        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
+        currentDrawView.startAnimation(animSet);
         currentDrawView.setPicture(imageId);
-
         Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
         currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
         setCordinates(immutableBmp);
@@ -167,7 +167,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         currentDrawView.setBrushSize(mediumBrush);
-        currentDrawView.startAnimation(animSet);
     }
 
     private void setCordinates(Bitmap immutableBmp) {
@@ -359,11 +358,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                     imageId = imageIds[i + 1];
                     viewFlipper.showNext();
                     currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-                    currentDrawView.startAnimation(animSet);
-                    currentDrawView.setPicture(imageId);
-                    Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
-                    currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
-                    setCordinates(immutableBmp);
+                    initCurrentView();
                     break;
                 }
             }
@@ -374,11 +369,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                     imageId = imageIds[i - 1];
                     viewFlipper.showPrevious();
                     currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-                    currentDrawView.startAnimation(animSet);
-                    currentDrawView.setPicture(imageId);
-                    Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
-                    currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
-                    setCordinates(immutableBmp);
+                    initCurrentView();
                     break;
                 }
             }
