@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -80,8 +81,20 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         //ads start
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek));
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        mAdView.loadAd(adRequest);
+
+        Bundle extras = new Bundle();
+        extras.putBoolean("is_designed_for_families", true);
+
+        /*AdRequest request = new AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .build();*/
+
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
+        mAdView.loadAd(request);
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
@@ -173,7 +186,7 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         currentDrawView = (MayekDrawView) viewFlipper.findViewWithTag(imageId);
         currentDrawView.setMayekName(getMayekName(imageId));
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
-
+        currentDrawView.startAnimation(animSet);
         float alpha = 0.9f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             currentDrawView.setAlpha(alpha);
