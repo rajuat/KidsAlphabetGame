@@ -42,11 +42,11 @@ public class PictureDrawView extends View {
 	private float touchX, touchY;
 	private int picture;
 	Bitmap pictureBitMap;
-	int x,y;
 
 	public void setPicture(int picture){
 		this.picture = picture;
 	}
+	int x,y;
 
 	public PictureDrawView(Context context, AttributeSet attrs){
 		super(context, attrs);

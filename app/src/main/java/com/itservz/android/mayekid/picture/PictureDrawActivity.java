@@ -51,7 +51,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
     //custom drawing view
     private PictureDrawView currentDrawView;
     //buttons
-    private ImageView currPaint, drawBtn, eraseBtn, newBtn, saveBtn, opacityBtn, nextBtn, previousBtn;
+    private ImageView currPaint, drawBtn, eraseBtn, newBtn, opacityBtn, nextBtn, previousBtn;
     //sizes
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
@@ -77,7 +77,10 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         //ads start
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_picture));
         AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
-        AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
+        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
         mAdView.loadAd(adRequest);
         //ads end
         Intent intent = getIntent();
@@ -128,9 +131,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         newBtn = (ImageView) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
-        saveBtn = (ImageView) findViewById(R.id.save_btn);
-        saveBtn.setOnClickListener(this);
-
         opacityBtn = (ImageView) findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
@@ -141,7 +141,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         nextBtn.setOnClickListener(this);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
-        animSet = new AnimationSet(true);
+        animSet = new AnimationSet(false);
         animSet.setFillAfter(true);
         animSet.setDuration(1500);
         animSet.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -155,7 +155,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         currentDrawView.setPicture(imageId);
         Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
         currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
-        setCordinates(immutableBmp);
 
         float alpha = 1.0f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -167,6 +166,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         currentDrawView.setBrushSize(mediumBrush);
+        setCordinates(immutableBmp);
     }
 
     private void setCordinates(Bitmap immutableBmp) {
@@ -174,8 +174,9 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int originalPos[] = new int[2];
         currentDrawView.getLocationOnScreen(originalPos);
-        currentDrawView.x = (dm.widthPixels - immutableBmp.getWidth()- originalPos[0] * 2 ) / 2;
-        currentDrawView.y = (dm.heightPixels - immutableBmp.getHeight()- originalPos[1] * 2 ) / 2;
+        int x = (originalPos[0] == 0) ? dm.widthPixels/6 : originalPos[0];
+        currentDrawView.x = (dm.widthPixels - immutableBmp.getWidth()- x * 2 ) / 2;
+        currentDrawView.y = (dm.heightPixels - immutableBmp.getHeight()- originalPos[1] * 2) / 2;
     }
 
     @Override
@@ -281,36 +282,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
             animatedView = animate(view);
             currentDrawView.startNew();
 
-        } else if (view.getId() == R.id.save_btn) {
-            soundPoolPlayer.playShortResource(R.raw.click);
-            animatedView = animate(view);
-            AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
-            saveDialog.setTitle("Save drawing");
-            saveDialog.setMessage("Save drawing to device Gallery?");
-            saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    currentDrawView.setDrawingCacheEnabled(true);
-                    currentDrawView.buildDrawingCache(true);
-
-                    String imgSaved = savePicture(currentDrawView.getDrawingCache(), UUID.randomUUID().toString() + ".png");
-                    if (imgSaved != null) {
-                        Toast savedToast = Toast.makeText(getApplicationContext(),
-                                "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
-                        savedToast.show();
-                    } else {
-                        Toast unsavedToast = Toast.makeText(getApplicationContext(),
-                                "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
-                        unsavedToast.show();
-                    }
-                    currentDrawView.destroyDrawingCache();
-                }
-            });
-            saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            saveDialog.show();
         } else if (view.getId() == R.id.opacity_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
@@ -387,24 +358,5 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         return imageView;
     }
 
-    private String savePicture(Bitmap bm, String imgName) {
-        String s = null;
-        OutputStream fOut = null;
-        String strDirectory = Environment.getExternalStorageDirectory().toString();
 
-        File f = new File(strDirectory, imgName);
-        try {
-            fOut = new FileOutputStream(f);
-
-            bm.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-            fOut.flush();
-            fOut.close();
-
-            s = MediaStore.Images.Media.insertImage(getContentResolver(),
-                    f.getAbsolutePath(), f.getName(), f.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return s;
-    }
 }

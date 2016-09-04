@@ -236,8 +236,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:measureAllChildren="false"
-            >
+            android:measureAllChildren="false">
         </ViewFlipper>
 
         <com.google.android.gms.ads.AdView
@@ -283,7 +282,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:weightSum="5">
+            android:weightSum="4">
 
             <ImageView
                 android:id="@+id/sound_btn"
@@ -325,15 +324,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/opacity" />
 
-            <ImageView
-                android:id="@+id/save_btn"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/save"
-                android:scaleType="centerInside"
-                android:src="@drawable/save" />
+
 
         </LinearLayout>
     </LinearLayout>

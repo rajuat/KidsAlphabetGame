@@ -42,12 +42,5 @@ public class Mayeks {
         return cards;
     }
 
-    public int getSoundIdFromImageId(int imageId){
-        for(MayekCard card : cards){
-            if(card.getRes() == imageId){
-                return card.getSound();
-            }
-        }
-        return 0;
-    }
+
 }
