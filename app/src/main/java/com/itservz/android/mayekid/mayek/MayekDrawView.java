@@ -74,8 +74,8 @@ public class MayekDrawView extends View {
 
 		textPaint = new TextPaint();
 		textPaint.setColor(Color.YELLOW);
-		textPaint.setShadowLayer(2.0f, 2.0f, 2.0f, Color.GREEN);
-		textPaint.setTextSize(128);
+		textPaint.setShadowLayer(6.0f, 2.0f, 2.0f, Color.GREEN);
+		textPaint.setTextSize(64);
 		textPaint.setTypeface(Typeface.create("Arial", Typeface.BOLD));
 		textPaint.setFakeBoldText(true);
 		textPaint.setAntiAlias(true);
@@ -93,7 +93,7 @@ public class MayekDrawView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
 		canvas.drawPath(drawPath, drawPaint);
-		canvas.drawText(mayekName, ((canvas.getWidth()-224)/2), 112, textPaint);
+		canvas.drawText(mayekName, (canvas.getWidth()/2) - 48, 72, textPaint);
 	}
 
 	@Override

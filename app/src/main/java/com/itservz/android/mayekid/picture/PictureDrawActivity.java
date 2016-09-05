@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -78,8 +79,13 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_picture));
         AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
         //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        AdRequest adRequest = new AdRequest.Builder()
+        /*AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();*/
+        Bundle extras = new Bundle();
+        extras.putBoolean("is_designed_for_families", true);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
                 .build();
         mAdView.loadAd(adRequest);
         //ads end
@@ -308,7 +314,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     seekTxt.setText(Integer.toString(progress) + "%");
                     currentDrawView.setPaintAlpha(seekOpq.getProgress());
-                    //
                 }
 
                 @Override

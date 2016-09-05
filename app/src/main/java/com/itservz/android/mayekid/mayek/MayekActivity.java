@@ -17,10 +17,11 @@ import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.MayekCard;
 import com.itservz.android.mayekid.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.Mayeks;
-import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
 
 import java.util.List;
+
+import com.itservz.android.mayekid.R;
 
 public class MayekActivity extends BaseActivity {
 

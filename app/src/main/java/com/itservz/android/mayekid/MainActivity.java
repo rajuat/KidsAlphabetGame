@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.itservz.android.mayekid.mayek.MayekActivity;
 import com.itservz.android.mayekid.picture.PictureActivity;
 
+import com.itservz.android.mayekid.R;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private SoundPoolPlayer soundPoolPlayer;

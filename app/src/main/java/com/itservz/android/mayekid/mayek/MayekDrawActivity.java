@@ -91,7 +91,7 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
         //ads start
-        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek));
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek2));
         AdView mAdView = (AdView) findViewById(R.id.adView);
 
         Bundle extras = new Bundle();

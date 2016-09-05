@@ -6,6 +6,8 @@ import android.media.SoundPool;
 
 import java.util.HashMap;
 
+import com.itservz.android.mayekid.R;
+
 /**
  * Created by raju.athokpam on 24-08-2016.
  */
