@@ -76,7 +76,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_picture_draw);
         //ads start
-        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_picture));
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
         AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
         //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
         /*AdRequest adRequest = new AdRequest.Builder()
@@ -85,7 +85,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         Bundle extras = new Bundle();
         extras.putBoolean("is_designed_for_families", true);
         AdRequest adRequest = new AdRequest.Builder()
-                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
                 .build();
         mAdView.loadAd(adRequest);
         //ads end

@@ -6,7 +6,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +15,11 @@
         android:screenOrientation="landscape"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">
@@ -35,15 +40,20 @@
             android:name=".BackgroundMusicService"
             android:enabled="true" />
 
-        <activity android:name=".picture.PictureActivity"
-                android:screenOrientation="landscape"/>
+        <activity
+            android:name=".picture.PictureActivity"
+            android:screenOrientation="landscape" />
 
-        <activity android:name=".picture.PictureDrawActivity"
+        <activity
+            android:name=".picture.PictureDrawActivity"
             android:screenOrientation="landscape"></activity>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <!--Include the AdActivity configChanges and theme. -->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+
     </application>
 
 </manifest>

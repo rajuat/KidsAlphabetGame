@@ -1,24 +1,15 @@
 package com.itservz.android.mayekid.mayek;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.LinearGradient;
-import android.graphics.Outline;
 import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -32,10 +23,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -50,12 +39,7 @@ import com.itservz.android.mayekid.Mayeks;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.SoundPoolPlayer;
 
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.UUID;
 
 public class MayekDrawActivity extends BaseActivity implements View.OnClickListener {
 
@@ -76,6 +60,7 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private AdView mAdView;
 
     private void setFlipperImage(int res) {
         MayekDrawView image = new MayekDrawView(getApplicationContext());
@@ -91,14 +76,14 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
         //ads start
-        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_unit_id_mayek));
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
+        mAdView = (AdView) findViewById(R.id.adView);
 
         Bundle extras = new Bundle();
         extras.putBoolean("is_designed_for_families", true);
 
        AdRequest request = new AdRequest.Builder()
-                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
                 .build();
 
         /*AdRequest request = new AdRequest.Builder()
@@ -131,8 +116,18 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
+        if (mAdView != null) {
+            mAdView.resume();
+        }
     }
 
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -159,6 +154,13 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         client.disconnect();
     }
 
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
     private void init() {
         //sizes from dimensions
         smallBrush = getResources().getInteger(R.integer.small_size);
