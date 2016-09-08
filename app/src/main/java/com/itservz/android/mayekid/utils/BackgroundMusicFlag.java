@@ -1,4 +1,4 @@
-package com.itservz.android.mayekid;
+package com.itservz.android.mayekid.utils;
 
 /**
  * Created by raju.athokpam on 31-08-2016.

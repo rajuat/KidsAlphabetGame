@@ -15,7 +15,6 @@
         android:screenOrientation="landscape"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -37,23 +36,23 @@
             android:screenOrientation="landscape" />
 
         <service
-            android:name=".BackgroundMusicService"
+            android:name=".utils.BackgroundMusicService"
             android:enabled="true" />
 
         <activity
             android:name=".picture.PictureActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".picture.PictureDrawActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
-        <!--Include the AdActivity configChanges and theme. -->
+        <!-- Include the AdActivity configChanges and theme. -->
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
-
+        <activity android:name=".masing.MasingActivity" />
+        <activity android:name=".masing.MasingDrawActivity"></activity>
     </application>
 
 </manifest>

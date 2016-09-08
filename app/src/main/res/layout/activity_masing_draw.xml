@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFFFF"
+    android:background="@drawable/bg"
     android:orientation="horizontal"
     android:weightSum="6"
-    tools:context="com.itservz.android.mayekid.picture.PictureDrawActivity">
+    tools:context=".masing.MasingDrawActivity">
+
     <!-- left  -->
     <LinearLayout
         android:layout_width="0dp"
@@ -35,7 +36,7 @@
 
         <!-- color panel -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="left"
             android:layout_weight="1"
@@ -231,29 +232,26 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:orientation="vertical"
-        android:weightSum="5">
-
+        android:weightSum="5"
+        android:orientation="vertical">
 
         <ViewFlipper
-            android:id="@+id/pictureFlipper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/flipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:measureAllChildren="false">
         </ViewFlipper>
 
-
         <com.google.android.gms.ads.AdView
-            android:id="@+id/pictureAdView"
+            android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_weight="4"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_picture" />
-
+            ads:adUnitId="@string/banner_ad_unit_id_mayek" />
 
     </LinearLayout>
 
@@ -291,6 +289,16 @@
             android:weightSum="4">
 
             <ImageView
+                android:id="@+id/sound_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/erase"
+                android:scaleType="centerInside"
+                android:src="@drawable/sound" />
+
+            <ImageView
                 android:id="@+id/new_btn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -311,16 +319,6 @@
                 android:src="@drawable/brush" />
 
             <ImageView
-                android:id="@+id/erase_btn"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/erase"
-                android:scaleType="centerInside"
-                android:src="@drawable/eraser" />
-
-            <ImageView
                 android:id="@+id/opacity_btn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -329,6 +327,8 @@
                 android:contentDescription="@string/opacity"
                 android:scaleType="centerInside"
                 android:src="@drawable/opacity" />
+
+
 
         </LinearLayout>
     </LinearLayout>

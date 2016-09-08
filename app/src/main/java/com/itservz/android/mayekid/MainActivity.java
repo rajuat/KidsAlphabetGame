@@ -1,6 +1,5 @@
 package com.itservz.android.mayekid;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,13 +13,14 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.media.MediaPlayer;
 import android.widget.Toast;
 
+import com.itservz.android.mayekid.masing.MasingActivity;
 import com.itservz.android.mayekid.mayek.MayekActivity;
 import com.itservz.android.mayekid.picture.PictureActivity;
 
-import com.itservz.android.mayekid.R;
+import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
+import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -28,10 +28,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView noticeBoard;
     private ImageView mayekBoard;
     private ImageView cardBoard;
-    private ImageView goToDraw;
-    private ImageView goToPaint;
     private ImageView soundView;
     private ImageView noticeView;
+    private ImageView masingView;
     private boolean doubleBackToExitPressedOnce;
 
     @Override
@@ -97,12 +96,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void click(View view) {
-        if (view.getId() == R.id.mayekBoardButton || view.getId() == R.id.gotodraw) {
+        if (view.getId() == R.id.mayekBoardButton ) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             wentToAnotherActivity = true;
             Intent intent = new Intent(this, MayekActivity.class);
             startActivity(intent);
-        } else if (view.getId() == R.id.cartoonBoardButton || view.getId() == R.id.gotopaint) {
+        }else if (view.getId() == R.id.masing ) {
+            soundPoolPlayer.playShortResource(R.raw.whoa);
+            wentToAnotherActivity = true;
+            Intent intent = new Intent(this, MasingActivity.class);
+            startActivity(intent);
+        }else if (view.getId() == R.id.cartoonBoardButton) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             wentToAnotherActivity = true;
             Intent intent = new Intent(this, PictureActivity.class);
@@ -126,8 +130,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         noticeBoard.clearAnimation();
         mayekBoard.clearAnimation();
         cardBoard.clearAnimation();
-        goToDraw.clearAnimation();
-        goToPaint.clearAnimation();
         soundView.clearAnimation();
         noticeView.clearAnimation();
     }
@@ -135,17 +137,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void animate() {
         mayekBoard = (ImageView) findViewById(R.id.mayekBoardButton);
         cardBoard = (ImageView) findViewById(R.id.cartoonBoardButton);
-        goToDraw = (ImageView) findViewById(R.id.gotodraw);
-        goToPaint = (ImageView) findViewById(R.id.gotopaint);
         soundView = (ImageView) findViewById(R.id.soundOnOff);
         noticeView = (ImageView) findViewById(R.id.noticeboard);
+        masingView = (ImageView) findViewById(R.id.masing);
+
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
         Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
         slowAnimation.setDuration(1800);
-        goToDraw.startAnimation(animation);
-        goToPaint.startAnimation(animation);
 
-        mayekBoard.startAnimation(slowAnimation);
+        mayekBoard.startAnimation(animation);
+        masingView.startAnimation(animation);
+
         cardBoard.startAnimation(slowAnimation);
         soundView.startAnimation(slowAnimation);
         noticeView.startAnimation(slowAnimation);

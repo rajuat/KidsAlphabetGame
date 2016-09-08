@@ -1,6 +1,5 @@
 package com.itservz.android.mayekid.picture;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,12 +11,12 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.itservz.android.mayekid.BackgroundMusicFlag;
+import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
 import com.itservz.android.mayekid.BaseActivity;
-import com.itservz.android.mayekid.Mayeks;
+import com.itservz.android.mayekid.utils.Mayeks;
 import com.itservz.android.mayekid.R;
-import com.itservz.android.mayekid.MayekCard;
-import com.itservz.android.mayekid.SoundPoolPlayer;
+import com.itservz.android.mayekid.utils.MayekCard;
+import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
 import java.util.List;
 

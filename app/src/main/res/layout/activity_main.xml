@@ -11,24 +11,27 @@
     tools:context="com.itservz.android.mayekid.MainActivity">
 
     <ImageView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/mb"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/e"
         android:id="@+id/mayekBoardButton"
-        android:onClick="click"/>
+        android:onClick="click"
+        android:layout_below="@+id/cartoonBoardButton"
+        android:layout_alignLeft="@+id/cartoonBoardButton"
+        android:layout_alignStart="@+id/cartoonBoardButton" />
 
     <ImageView
-        android:layout_width="200dp"
+        android:layout_width="160dp"
         android:layout_height="220dp"
         android:src="@drawable/noticeboard"
         android:id="@+id/noticeboard"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/cartoonBoardButton"
-        android:layout_toStartOf="@+id/cartoonBoardButton"
-        android:onClick="click"/>
+        android:onClick="click"
+        android:layout_alignBottom="@+id/cartoonBoardButton"
+        android:layout_toRightOf="@+id/cartoonBoardButton"
+        android:layout_toEndOf="@+id/cartoonBoardButton"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginBottom="16dp" />
 
     <ImageView
         android:layout_width="80dp"
@@ -42,33 +45,23 @@
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/previous"
-        android:id="@+id/gotodraw"
-        android:layout_alignTop="@+id/gotopaint"
-        android:layout_toRightOf="@+id/mayekBoardButton"
-        android:layout_toEndOf="@+id/mayekBoardButton"
-        android:onClick="click"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/next"
-        android:id="@+id/gotopaint"
-        android:layout_alignBottom="@+id/cartoonBoardButton"
-        android:layout_toLeftOf="@+id/cartoonBoardButton"
-        android:layout_toStartOf="@+id/cartoonBoardButton"
-        android:onClick="click"/>
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/ratiya"
+        android:id="@+id/cartoonBoardButton"
+        android:onClick="click"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/db"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/cartoonBoardButton"
-        android:onClick="click"/>
+        android:layout_height="160dp"
+        android:src="@drawable/h7"
+        android:id="@+id/masing"
+        android:onClick="click"
+        android:layout_below="@+id/cartoonBoardButton"
+        android:layout_alignRight="@+id/soundOnOff"
+        android:layout_alignEnd="@+id/soundOnOff" />
 
 </RelativeLayout>

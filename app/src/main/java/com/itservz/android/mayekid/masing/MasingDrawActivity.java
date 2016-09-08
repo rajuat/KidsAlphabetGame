@@ -1,11 +1,10 @@
-package com.itservz.android.mayekid.picture;
+package com.itservz.android.mayekid.masing;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -20,27 +19,38 @@ import android.widget.ViewFlipper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
+import com.itservz.android.mayekid.mayek.MayekDrawView;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
-import com.itservz.android.mayekid.utils.BitmapHelper;
+import com.itservz.android.mayekid.utils.MayekCard;
+import com.itservz.android.mayekid.utils.MayekSoundPoolPlayer;
+import com.itservz.android.mayekid.utils.Mayeks;
 import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
-public class PictureDrawActivity extends BaseActivity implements View.OnClickListener {
+import java.util.List;
 
-    private PictureDrawView currentDrawView;
-    private ImageView currPaint, drawBtn, eraseBtn, newBtn, opacityBtn, nextBtn, previousBtn;
-    private float smallBrush, mediumBrush, largeBrush;
+public class MasingDrawActivity extends BaseActivity implements View.OnClickListener {
+
+    private MayekDrawView currentDrawView;
+    private ImageView currPaint, drawBtn, soundBtn, newBtn, opacityBtn, nextBtn, previousBtn;
     private int[] imageIds;
     private int imageId;
     private Animation animation;
     private View animatedView;
     private ViewFlipper viewFlipper;
+    private List<MayekCard> mayeks;
     private SoundPoolPlayer soundPoolPlayer;
+    //private MayekSoundPoolPlayer mayekSoundPoolPlayer;
+    private AdView mAdView;
     private Animation slowAnimation;
 
     private void setFlipperImage(int res) {
-        PictureDrawView image = new PictureDrawView(getApplicationContext(), res);
+        MayekDrawView image = new MayekDrawView(getApplicationContext());
+        image.setBackgroundResource(res);
         image.setTag(res);
         viewFlipper.addView(image);
     }
@@ -50,65 +60,85 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_picture_draw);
+        setContentView(R.layout.activity_masing_draw);
         //ads start
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
-        AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
-        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        /*AdRequest adRequest = new AdRequest.Builder() A0A3D2227CBAA74DAC3C250E4861EED3
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();*/
+        mAdView = (AdView) findViewById(R.id.adView);
+
         Bundle extras = new Bundle();
         extras.putBoolean("is_designed_for_families", true);
-        AdRequest adRequest = new AdRequest.Builder()
+
+        AdRequest request = new AdRequest.Builder()
                 //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
                 .build();
-        mAdView.loadAd(adRequest);
+
+        /*AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();*/
+
+        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
+        mAdView.loadAd(request);
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
+        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        for (int i = 0; i < imageIds.length; i++) {
+            setFlipperImage(imageIds[i]);
+        }
         init();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        viewFlipper = (ViewFlipper) findViewById(R.id.pictureFlipper);
-        for (int i = 0; i < imageIds.length; i++) {
-            setFlipperImage(imageIds[i]);
-        }
-        currentDrawView = (PictureDrawView) viewFlipper.findViewWithTag(imageId);
-        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
-        initCurrentView();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
+        //mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
         soundPoolPlayer.release();
+        //mayekSoundPoolPlayer.release();
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             stopService(backgroundMusicService);
         }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     private void init() {
-        //sizes from dimensions
-        smallBrush = getResources().getInteger(R.integer.small_size);
-        mediumBrush = getResources().getInteger(R.integer.medium_size);
-        largeBrush = getResources().getInteger(R.integer.large_size);
-
         drawBtn = (ImageView) findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
-        eraseBtn = (ImageView) findViewById(R.id.erase_btn);
-        eraseBtn.setOnClickListener(this);
+        soundBtn = (ImageView) findViewById(R.id.sound_btn);
+        soundBtn.setOnClickListener(this);
 
         newBtn = (ImageView) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
@@ -124,16 +154,25 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
 
         animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
         slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation);
+        initCurrentView();
+    }
 
+    private String getMayekName(int imageId) {
+        mayeks = Mayeks.getInstance().getCards();
+        for (MayekCard mayek : mayeks) {
+            if (mayek.getRes() == imageId) {
+                return mayek.getTitle();
+            }
+        }
+        return "";
     }
 
     private void initCurrentView() {
+        currentDrawView = (MayekDrawView) viewFlipper.findViewWithTag(imageId);
+        currentDrawView.setMayekName(getMayekName(imageId));
+        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
         currentDrawView.startAnimation(slowAnimation);
-        currentDrawView.setPicture(imageId);
-        Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
-        currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
-
-        float alpha = 1.0f;
+        float alpha = 0.9f;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             currentDrawView.setAlpha(alpha);
         }
@@ -142,18 +181,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
-        currentDrawView.setBrushSize(mediumBrush);
-        setCordinates(immutableBmp);
-    }
 
-    private void setCordinates(Bitmap immutableBmp) {
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int originalPos[] = new int[2];
-        currentDrawView.getLocationOnScreen(originalPos);
-        int x = (originalPos[0] == 0) ? dm.widthPixels / 6 : originalPos[0];
-        currentDrawView.x = (dm.widthPixels - immutableBmp.getWidth() - x * 2) / 2;
-        currentDrawView.y = (dm.heightPixels - immutableBmp.getHeight() - originalPos[1] * 2) / 2;
     }
 
     @Override
@@ -163,7 +191,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
 
     public void paintClicked(View view) {
         currentDrawView.setErase(false);
-        currentDrawView.setPaintAlpha(50);
+        currentDrawView.setPaintAlpha(100);
         currentDrawView.setBrushSize(currentDrawView.getLastBrushSize());
 
         if (view != currPaint) {
@@ -187,40 +215,11 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
             currentDrawView.brushSizeAction(this);
-        } else if (view.getId() == R.id.erase_btn) {
-            soundPoolPlayer.playShortResource(R.raw.click);
+
+        } else if (view.getId() == R.id.sound_btn) {
             animatedView = animate(view);
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            brushDialog.setContentView(R.layout.brush_chooser);
-            ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(smallBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(mediumBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currentDrawView.setErase(true);
-                    currentDrawView.setBrushSize(largeBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            brushDialog.show();
+            //mayekSoundPoolPlayer.playShortResource(imageId);
+
         } else if (view.getId() == R.id.new_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);
             animatedView = animate(view);
@@ -238,8 +237,9 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                 if (imageId == imageIds[i] && i < imageIds.length - 1) {
                     imageId = imageIds[i + 1];
                     viewFlipper.showNext();
-                    currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-                    initCurrentView();
+                    currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+                    currentDrawView.startAnimation(slowAnimation);
+                    currentDrawView.setMayekName(getMayekName(imageId));
                     break;
                 }
             }
@@ -249,13 +249,15 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
                 if (imageId == imageIds[i] && i > 0) {
                     imageId = imageIds[i - 1];
                     viewFlipper.showPrevious();
-                    currentDrawView = (PictureDrawView) viewFlipper.getCurrentView();
-                    initCurrentView();
+                    currentDrawView = (MayekDrawView) viewFlipper.getCurrentView();
+                    currentDrawView.startAnimation(slowAnimation);
+                    currentDrawView.setMayekName(getMayekName(imageId));
                     break;
                 }
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -267,4 +269,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         imageView.startAnimation(animation);
         return imageView;
     }
+
+
 }

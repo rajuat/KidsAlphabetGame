@@ -1,4 +1,4 @@
-package com.itservz.android.mayekid;
+package com.itservz.android.mayekid.utils;
 
 import android.content.Context;
 import android.media.AudioManager;

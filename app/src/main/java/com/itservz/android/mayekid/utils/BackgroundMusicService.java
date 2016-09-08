@@ -1,4 +1,4 @@
-package com.itservz.android.mayekid;
+package com.itservz.android.mayekid.utils;
 
 import android.app.Service;
 import android.content.Context;
