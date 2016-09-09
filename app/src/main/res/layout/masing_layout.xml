@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="240dp"
     android:layout_height="match_parent"
@@ -12,6 +13,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:backgroundTintMode="src_over"
+        android:src="@drawable/board"
         app:cardBackgroundColor="#FFFF0000"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
@@ -21,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:padding="16dp"
             android:weightSum="2"
             >
 
@@ -35,7 +38,8 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/a0"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:layout_gravity="center" />
             </LinearLayout>
 
             <LinearLayout
@@ -46,8 +50,8 @@
 
                 <ImageView
                     android:id="@+id/masing_count"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="128dp"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:src="@drawable/next"
                     android:scaleType="centerInside" />
@@ -55,11 +59,13 @@
 
                 <TextView
                     android:id="@+id/masing_title"
-                    android:layout_width="120dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textColor="#FFFFFF"
                     android:text="DUMMY"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical|right" />
             </LinearLayout>
         </LinearLayout>
 

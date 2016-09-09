@@ -1,7 +1,6 @@
 package com.itservz.android.mayekid.masing;
 
 import com.itservz.android.mayekid.R;
-import com.itservz.android.mayekid.utils.MayekCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Masings {
 
     private Masings() {
         cards = new ArrayList<>();
-        cards.add(new MasingCard(R.drawable.paint, R.drawable.a0, R.raw.akok, "PHUN"));
+        cards.add(new MasingCard(R.drawable.large, R.drawable.a0, R.raw.akok, "PHUN"));
         cards.add(new MasingCard(R.drawable.paint, R.drawable.b1, R.raw.akok, "AMA"));
         cards.add(new MasingCard(R.drawable.paint, R.drawable.c2, R.raw.akok, "ANI"));
         cards.add(new MasingCard(R.drawable.paint, R.drawable.d3, R.raw.akok, "AHUM"));

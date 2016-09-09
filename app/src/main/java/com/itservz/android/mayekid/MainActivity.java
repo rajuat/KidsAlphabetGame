@@ -3,7 +3,6 @@ package com.itservz.android.mayekid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.itservz.android.mayekid.masing.MasingActivity;
 import com.itservz.android.mayekid.mayek.MayekActivity;
 import com.itservz.android.mayekid.picture.PictureActivity;
-
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
 import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
@@ -101,7 +99,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             wentToAnotherActivity = true;
             Intent intent = new Intent(this, MayekActivity.class);
             startActivity(intent);
-        }else if (view.getId() == R.id.masing ) {
+        }else if (view.getId() == R.id.masing_board ) {
             soundPoolPlayer.playShortResource(R.raw.whoa);
             wentToAnotherActivity = true;
             Intent intent = new Intent(this, MasingActivity.class);
@@ -139,7 +137,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         cardBoard = (ImageView) findViewById(R.id.cartoonBoardButton);
         soundView = (ImageView) findViewById(R.id.soundOnOff);
         noticeView = (ImageView) findViewById(R.id.noticeboard);
-        masingView = (ImageView) findViewById(R.id.masing);
+        masingView = (ImageView) findViewById(R.id.masing_board);
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
         Animation slowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation01);
@@ -156,20 +154,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void animateNoticeBoard() {
         noticeBoard = (ImageView) findViewById(R.id.noticeboard);
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
         int originalPos[] = new int[2];
         noticeBoard.getLocationOnScreen(originalPos);
-
-        int xDelta = (dm.widthPixels - noticeBoard.getMeasuredWidth() - originalPos[0] * 2) / 2;
 
         AnimationSet animSet = new AnimationSet(true);
         animSet.setFillAfter(true);
         animSet.setDuration(1000);
         animSet.setInterpolator(new BounceInterpolator());
 
-        TranslateAnimation translate = new TranslateAnimation(xDelta, xDelta, -noticeBoard.getMeasuredHeight(), 0);
+        TranslateAnimation translate = new TranslateAnimation(originalPos[0], originalPos[0], -noticeBoard.getMeasuredHeight(), 0);
         animSet.addAnimation(translate);
 
         noticeBoard.startAnimation(animSet);

@@ -17,7 +17,6 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,22 +66,22 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
         //ads start
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
+        //MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
         mAdView = (AdView) findViewById(R.id.adView);
 
         Bundle extras = new Bundle();
         extras.putBoolean("is_designed_for_families", true);
 
-        AdRequest request = new AdRequest.Builder()
+        /*AdRequest adRequest = new AdRequest.Builder()
                 //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                .build();
-
-        /*AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();*/
 
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .setRequestAgent("android_studio:ad_template").build();
+
         //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        mAdView.loadAd(request);
+        mAdView.loadAd(adRequest);
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);

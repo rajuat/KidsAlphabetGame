@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "504222786416",
-    "firebase_url": "https://mayekid-f1285.firebaseio.com",
-    "project_id": "mayekid-f1285",
-    "storage_bucket": "mayekid-f1285.appspot.com"
+    "project_number": "947895036885",
+    "firebase_url": "https://mayekid-61172.firebaseio.com",
+    "project_id": "mayekid-61172",
+    "storage_bucket": "mayekid-61172.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:504222786416:android:d10124dcad033b76",
+        "mobilesdk_app_id": "1:947895036885:android:d10124dcad033b76",
         "android_client_info": {
           "package_name": "com.itservz.android.mayekid"
         }
       },
       "oauth_client": [
         {
-          "client_id": "504222786416-o1coepi2ljt339bljtie8f23vtdkhrd3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.itservz.android.mayekid",
-            "certificate_hash": "2DB08E82A2F3036D38F3C41ECFB2CEDB4559DB6D"
-          }
-        },
-        {
-          "client_id": "504222786416-etkl0kid074dt29vace68i6snttsi9fj.apps.googleusercontent.com",
+          "client_id": "947895036885-bjr66g6c37nvg2pk6keshvnnc67t7i3a.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDpNqEOracRcihKby8h6cbnmeCk7XBNoB0"
+          "current_key": "AIzaSyCrWxs41d5T1roTdeF734UtgpJkwdgqmcE"
         }
       ],
       "services": {
@@ -41,10 +33,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1,
-          "banner_ad_unit_id_mayek2": "ca-app-pub-7027483312186624/8538661396",
-          "banner_ad_unit_id_mayek": "ca-app-pub-7027483312186624/9583892592",
-          "banner_ad_unit_id_picture": "ca-app-pub-7027483312186624/3537358995"
+          "status": 2
         }
       }
     }

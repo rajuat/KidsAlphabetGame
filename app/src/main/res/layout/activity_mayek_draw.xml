@@ -251,7 +251,8 @@
             android:layout_centerHorizontal="true"
             android:layout_weight="4"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_mayek" />
+            ads:adUnitId="@string/banner_ad_unit_id"
+            />
 
     </LinearLayout>
 
