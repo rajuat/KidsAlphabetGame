@@ -1,8 +1,6 @@
 package com.itservz.android.mayekid.masing;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,18 +14,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.facebook.FacebookSdk;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.appevents.AppEventsLogger;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.mayek.MayekDrawView;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
+import com.itservz.android.mayekid.utils.MasingSoundPoolPlayer;
 import com.itservz.android.mayekid.utils.MayekCard;
-import com.itservz.android.mayekid.utils.MayekSoundPoolPlayer;
 import com.itservz.android.mayekid.utils.Mayeks;
 import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
@@ -44,9 +41,9 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
     private ViewFlipper viewFlipper;
     private List<MayekCard> mayeks;
     private SoundPoolPlayer soundPoolPlayer;
-    //private MayekSoundPoolPlayer mayekSoundPoolPlayer;
-    private AdView mAdView;
+    private MasingSoundPoolPlayer masingSoundPoolPlayer;
     private Animation slowAnimation;
+    private AdView adViewFacebook;
 
     private void setFlipperImage(int res) {
         MayekDrawView image = new MayekDrawView(getApplicationContext());
@@ -61,23 +58,15 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_masing_draw);
-        //ads start
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
-        mAdView = (AdView) findViewById(R.id.adView);
-
-        Bundle extras = new Bundle();
-        extras.putBoolean("is_designed_for_families", true);
-
-        AdRequest request = new AdRequest.Builder()
-                //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                .build();
-
-        /*AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();*/
-
-        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        mAdView.loadAd(request);
+        //ads start - facebook - Initialize the SDK before executing any other operations,
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        // Instantiate an AdView view
+        //AdSettings.addTestDevice("0f811a7111ec44bdede82a1ca42abcb9");
+        adViewFacebook = new AdView(this, "1782121292033969_1785196805059751", AdSize.BANNER_HEIGHT_50);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.masingAdView);
+        layout.addView(adViewFacebook);
+        adViewFacebook.loadAd();
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
@@ -95,22 +84,11 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         soundPoolPlayer = new SoundPoolPlayer(getApplicationContext());
-        //mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
+        masingSoundPoolPlayer = new MasingSoundPoolPlayer(getApplicationContext());
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
-        if (mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
-        super.onPause();
     }
 
     @Override
@@ -118,7 +96,7 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         super.onStop();
 
         soundPoolPlayer.release();
-        //mayekSoundPoolPlayer.release();
+        masingSoundPoolPlayer.release();
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             stopService(backgroundMusicService);
         }
@@ -127,8 +105,8 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
+        if (adViewFacebook != null) {
+            adViewFacebook.destroy();
         }
         super.onDestroy();
     }
@@ -137,7 +115,7 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         drawBtn = (ImageView) findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
-        soundBtn = (ImageView) findViewById(R.id.sound_btn);
+        soundBtn = (ImageView) findViewById(R.id.masing_sound_btn);
         soundBtn.setOnClickListener(this);
 
         newBtn = (ImageView) findViewById(R.id.new_btn);
@@ -216,9 +194,9 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
             animatedView = animate(view);
             currentDrawView.brushSizeAction(this);
 
-        } else if (view.getId() == R.id.sound_btn) {
+        } else if (view.getId() == R.id.masing_sound_btn) {
             animatedView = animate(view);
-            //mayekSoundPoolPlayer.playShortResource(imageId);
+            masingSoundPoolPlayer.playShortResource(imageId);
 
         } else if (view.getId() == R.id.new_btn) {
             soundPoolPlayer.playShortResource(R.raw.click);

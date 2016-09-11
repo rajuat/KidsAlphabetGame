@@ -20,7 +20,7 @@ import com.itservz.android.mayekid.picture.PictureActivity;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
 import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity  {
 
     private SoundPoolPlayer soundPoolPlayer;
     private ImageView noticeBoard;
@@ -67,13 +67,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onDestroy(){
-        super.onDestroy();
         stopService(backgroundMusicService);
+        super.onDestroy();
     }
 
-    @Override
-    public void onClick(View view) {
-    }
+
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {

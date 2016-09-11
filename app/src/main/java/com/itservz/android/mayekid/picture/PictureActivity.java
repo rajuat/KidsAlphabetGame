@@ -11,11 +11,15 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
+import com.google.ads.mediation.admob.AdMobAdapter;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.itservz.android.mayekid.BaseActivity;
-import com.itservz.android.mayekid.utils.Mayeks;
 import com.itservz.android.mayekid.R;
+import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
 import com.itservz.android.mayekid.utils.MayekCard;
+import com.itservz.android.mayekid.utils.Mayeks;
 import com.itservz.android.mayekid.utils.SoundPoolPlayer;
 
 import java.util.List;
@@ -28,6 +32,7 @@ public class PictureActivity extends BaseActivity {
     private List<MayekCard> cards;
     private int[] imageIds = null;
     private SoundPoolPlayer soundPoolPlayer;
+    private AdView mAdViewAdMob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,12 @@ public class PictureActivity extends BaseActivity {
                 outRect.set(0, sidePadding, 0, sidePadding);
             }
         });
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
+        mAdViewAdMob = (com.google.android.gms.ads.AdView) findViewById(R.id.pictureCardAdView);
+        Bundle extras = new Bundle();
+        extras.putBoolean("is_designed_for_families", true);
+        AdRequest adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
+        mAdViewAdMob.loadAd(adRequest);
 
     }
 
@@ -86,15 +97,34 @@ public class PictureActivity extends BaseActivity {
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.resume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.pause();
+        }
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         soundPoolPlayer.release();
         if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
             stopService(backgroundMusicService);
         }
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override

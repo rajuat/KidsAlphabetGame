@@ -1,7 +1,6 @@
 package com.itservz.android.mayekid.mayek;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.facebook.FacebookSdk;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.appevents.AppEventsLogger;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
@@ -34,23 +33,16 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
 
     private MayekDrawView currentDrawView;
     private ImageView currPaint, drawBtn, soundBtn, newBtn, opacityBtn, nextBtn, previousBtn;
-    //private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
     private int imageId;
     private Animation animation;
     private View animatedView;
     private ViewFlipper viewFlipper;
-    //private AnimationSet animSet;
     private List<MayekCard> mayeks;
     private SoundPoolPlayer soundPoolPlayer;
     private MayekSoundPoolPlayer mayekSoundPoolPlayer;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-    private AdView mAdView;
     private Animation slowAnimation;
+    private AdView adViewFacebook;
 
     private void setFlipperImage(int res) {
         MayekDrawView image = new MayekDrawView(getApplicationContext());
@@ -65,23 +57,16 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
-        //ads start
-        //MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
-        mAdView = (AdView) findViewById(R.id.adView);
 
-        Bundle extras = new Bundle();
-        extras.putBoolean("is_designed_for_families", true);
+        //ads start - facebook - Initialize the SDK before executing any other operations,
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        //AdSettings.addTestDevice("428c356f11e7ebfb8aba611cf2dabe19");
+        adViewFacebook = new AdView(this, "1782121292033969_1785195955059836", AdSize.BANNER_HEIGHT_50);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.mayekAdView);
+        layout.addView(adViewFacebook);
+        adViewFacebook.loadAd();
 
-        /*AdRequest adRequest = new AdRequest.Builder()
-                //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                .build();*/
-
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .setRequestAgent("android_studio:ad_template").build();
-
-        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        mAdView.loadAd(adRequest);
         //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
@@ -92,9 +77,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             setFlipperImage(imageIds[i]);
         }
         init();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -106,49 +88,22 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
-        if (mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
-        super.onPause();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MayekDraw Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.itservz.android.mayekid/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
         soundPoolPlayer.release();
         mayekSoundPoolPlayer.release();
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             stopService(backgroundMusicService);
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.disconnect();
     }
 
     @Override
     public void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
+        if (adViewFacebook != null) {
+            adViewFacebook.destroy();
         }
         super.onDestroy();
     }
@@ -294,25 +249,5 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
     private View animate(View imageView) {
         imageView.startAnimation(animation);
         return imageView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MayekDraw Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.itservz.android.mayekid/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
     }
 }

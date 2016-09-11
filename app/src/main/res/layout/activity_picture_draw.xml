@@ -232,28 +232,27 @@
         android:layout_height="match_parent"
         android:layout_weight="4"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="7">
 
 
         <ViewFlipper
             android:id="@+id/pictureFlipper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
             android:measureAllChildren="false">
         </ViewFlipper>
 
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/pictureAdView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="4"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_picture" />
-
+            android:layout_weight="6"
+            android:id="@+id/pictureAdView"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            />
 
     </LinearLayout>
 

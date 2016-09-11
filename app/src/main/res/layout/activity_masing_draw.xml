@@ -232,7 +232,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:weightSum="5"
+        android:weightSum="7"
         android:orientation="vertical">
 
         <ViewFlipper
@@ -243,15 +243,14 @@
             android:measureAllChildren="false">
         </ViewFlipper>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="4"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_mayek" />
+            android:layout_weight="6"
+            android:id="@+id/masingAdView"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            />
 
     </LinearLayout>
 
@@ -289,7 +288,7 @@
             android:weightSum="4">
 
             <ImageView
-                android:id="@+id/sound_btn"
+                android:id="@+id/masing_sound_btn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -17,9 +18,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import com.facebook.FacebookSdk;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.appevents.AppEventsLogger;
+
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
@@ -30,14 +34,16 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
 
     private PictureDrawView currentDrawView;
     private ImageView currPaint, drawBtn, eraseBtn, newBtn, opacityBtn, nextBtn, previousBtn;
-    private float smallBrush, mediumBrush, largeBrush;
-    private int[] imageIds;
-    private int imageId;
     private Animation animation;
     private View animatedView;
     private ViewFlipper viewFlipper;
     private SoundPoolPlayer soundPoolPlayer;
     private Animation slowAnimation;
+    private AdView adViewFacebook;
+    private float dpWidth, dpHeight;
+    private float smallBrush, mediumBrush, largeBrush;
+    private int[] imageIds;
+    private int imageId;
 
     private void setFlipperImage(int res) {
         PictureDrawView image = new PictureDrawView(getApplicationContext(), res);
@@ -51,23 +57,27 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_picture_draw);
-        //ads start
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
-        AdView mAdView = (AdView) findViewById(R.id.pictureAdView);
-        //AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
-        /*AdRequest adRequest = new AdRequest.Builder() A0A3D2227CBAA74DAC3C250E4861EED3
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();*/
-        Bundle extras = new Bundle();
-        extras.putBoolean("is_designed_for_families", true);
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                .build();
-        mAdView.loadAd(adRequest);
+        //ads start  - facebook - Initialize the SDK before executing any other operations,
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        //AdSettings.addTestDevice("4c05d1a9f3c86e17fd806e48202e6a94");
+        adViewFacebook = new AdView(this, "1782121292033969_1785127565066675", AdSize.BANNER_HEIGHT_50);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.pictureAdView);
+        layout.addView(adViewFacebook);
+        adViewFacebook.loadAd();
         //ads end
+
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
+
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics ();
+        display.getMetrics(outMetrics);
+
+        float density  = getResources().getDisplayMetrics().density;
+        dpHeight = outMetrics.heightPixels / density;
+        dpWidth  = outMetrics.widthPixels / density;
 
         init();
     }
@@ -91,11 +101,19 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void onStop() {
-        super.onStop();
         soundPoolPlayer.release();
         if (!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()) {
             stopService(backgroundMusicService);
         }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(adViewFacebook != null){
+            adViewFacebook.destroy();
+        }
+        super.onDestroy();
     }
 
     private void init() {
@@ -130,7 +148,8 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
     private void initCurrentView() {
         currentDrawView.startAnimation(slowAnimation);
         currentDrawView.setPicture(imageId);
-        Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, 224, 224);
+
+        Bitmap immutableBmp = BitmapHelper.decodeSampledBitmapFromResource(getResources(), imageId, ((int)dpWidth)*4/6, ((int)dpHeight)- 32);
         currentDrawView.pictureBitMap = immutableBmp.copy(Bitmap.Config.ARGB_8888, true);
 
         float alpha = 1.0f;

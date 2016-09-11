@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="click"
-            android:src="@drawable/mb"
+            android:src="@drawable/mayekb"
             android:layout_gravity="bottom" />
 
         <ImageView
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="click"
-            android:src="@drawable/masing"
+            android:src="@drawable/masingb"
             android:layout_gravity="bottom" />
 
         <ImageView
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="click"
-            android:src="@drawable/db"
+            android:src="@drawable/paintb"
             android:layout_gravity="bottom" />
 
     </LinearLayout>

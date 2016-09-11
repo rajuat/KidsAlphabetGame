@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.mayek.MayekDrawActivity;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
-import com.itservz.android.mayekid.utils.MayekSoundPoolPlayer;
+import com.itservz.android.mayekid.utils.MasingSoundPoolPlayer;
 
 import java.util.List;
 
@@ -21,7 +25,8 @@ public class MasingActivity extends BaseActivity {
 
     private List<MasingCard> masings;
     private int[] imageIds = null;
-    //private MayekSoundPoolPlayer mayekSoundPoolPlayer;
+    private AdView mAdViewAdMob;
+    private MasingSoundPoolPlayer masingSoundPoolPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +56,22 @@ public class MasingActivity extends BaseActivity {
                 outRect.set(0, sidePadding, 0, sidePadding);
             }
         });
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
+        mAdViewAdMob = (AdView) findViewById(R.id.masingCardAdView);
+        Bundle extras = new Bundle();
+        extras.putBoolean("is_designed_for_families", true);
+        AdRequest adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
+        mAdViewAdMob.loadAd(adRequest);
     }
-
-
 
     private MasingListener getListener(){
         return new MasingListener() {
             @Override
             public void recyclerViewClick(int imageId) {
                 wentToAnotherActivity = true;
-                //mayekSoundPoolPlayer.playShortResource(imageId);
-                Intent intent =  new Intent(getBaseContext(), MayekDrawActivity.class);
+                masingSoundPoolPlayer.playShortResource(imageId);
+                Intent intent =  new Intent(getBaseContext(), MasingDrawActivity.class);
                 intent.putExtra("imageIds", imageIds);
                 intent.putExtra("imageId", imageId);
                 startActivity(intent);
@@ -72,20 +82,39 @@ public class MasingActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //mayekSoundPoolPlayer = new MayekSoundPoolPlayer(getApplicationContext());
+        masingSoundPoolPlayer = new MasingSoundPoolPlayer(getApplicationContext());
         if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.resume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.pause();
+        }
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //mayekSoundPoolPlayer.release();
+        masingSoundPoolPlayer.release();
         if(!wentToAnotherActivity && BackgroundMusicFlag.getInstance().isSoundOnOff()){
             stopService(backgroundMusicService);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdViewAdMob != null) {
+            mAdViewAdMob.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override
