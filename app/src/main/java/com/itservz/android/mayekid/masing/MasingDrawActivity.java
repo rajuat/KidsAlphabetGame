@@ -62,7 +62,7 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         // Instantiate an AdView view
-        //AdSettings.addTestDevice("0f811a7111ec44bdede82a1ca42abcb9");
+        //AdSettings.addTestDevice("d20a955015c133c0ee1394fa9ae0f5c9");
         adViewFacebook = new AdView(this, "1782121292033969_1785196805059751", AdSize.BANNER_HEIGHT_50);
         LinearLayout layout = (LinearLayout)findViewById(R.id.masingAdView);
         layout.addView(adViewFacebook);

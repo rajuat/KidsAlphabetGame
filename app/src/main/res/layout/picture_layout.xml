@@ -10,7 +10,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/pictureCardView"
         android:layout_width="192dp"
-        android:layout_height="136dp"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="#FFFFFFFF"
         app:cardElevation="4dp"
         android:animateLayoutChanges="true"
