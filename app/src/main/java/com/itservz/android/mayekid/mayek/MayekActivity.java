@@ -9,10 +9,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
@@ -27,7 +23,6 @@ public class MayekActivity extends BaseActivity {
     private List<MayekCard> mayeks;
     private int[] imageIds = null;
     private MayekSoundPoolPlayer mayekSoundPoolPlayer;
-    private AdView mAdViewAdMob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +53,7 @@ public class MayekActivity extends BaseActivity {
             }
         });
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7027483312186624~8107159399");
-        mAdViewAdMob = (AdView) findViewById(R.id.mayekCardAdView);
-        Bundle extras = new Bundle();
-        extras.putBoolean("is_designed_for_families", true);
-        AdRequest adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
-        mAdViewAdMob.loadAd(adRequest);
     }
-
-
 
     private MayekListener getListener(){
         return new MayekListener() {
@@ -90,17 +77,6 @@ public class MayekActivity extends BaseActivity {
             startService(backgroundMusicService);
         }
         wentToAnotherActivity = false;
-        if (mAdViewAdMob != null) {
-            mAdViewAdMob.resume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (mAdViewAdMob != null) {
-            mAdViewAdMob.pause();
-        }
-        super.onPause();
     }
 
     @Override
@@ -110,14 +86,6 @@ public class MayekActivity extends BaseActivity {
             stopService(backgroundMusicService);
         }
         super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mAdViewAdMob != null) {
-            mAdViewAdMob.destroy();
-        }
-        super.onDestroy();
     }
 
     @Override

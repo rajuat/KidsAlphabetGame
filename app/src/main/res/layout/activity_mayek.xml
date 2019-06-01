@@ -17,12 +17,4 @@
         android:layout_weight="3"
         />
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/mayekCardAdView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id_mayek" />
-
 </LinearLayout>

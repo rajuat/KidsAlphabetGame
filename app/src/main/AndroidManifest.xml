@@ -35,10 +35,6 @@ android:versionName="1.2">
         android:name=".mayek.MayekDrawActivity"
         android:screenOrientation="landscape" />1
 
-    <service
-        android:name=".utils.BackgroundMusicService"
-        android:enabled="true" />
-
     <activity
         android:name=".picture.PictureActivity"
         android:screenOrientation="landscape" />
@@ -53,16 +49,10 @@ android:versionName="1.2">
     <activity
         android:name=".masing.MasingDrawActivity"
         android:screenOrientation="landscape" />
+    <service
+        android:name=".utils.BackgroundMusicService"
+        android:enabled="true" ></service>
 
-    <!-- Include the AdActivity configChanges and theme. -->
-    <activity
-        android:name="com.google.android.gms.ads.AdActivity"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-        android:theme="@android:style/Theme.Translucent" />
-
-    <provider android:authorities="com.facebook.app.FacebookContentProvider1782121292033969"
-        android:name="com.facebook.FacebookContentProvider"
-        android:exported="true" />
 </application>
 
 </manifest>

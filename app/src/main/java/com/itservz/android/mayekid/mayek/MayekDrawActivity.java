@@ -14,11 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.facebook.FacebookSdk;
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.appevents.AppEventsLogger;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
@@ -42,7 +37,6 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
     private SoundPoolPlayer soundPoolPlayer;
     private MayekSoundPoolPlayer mayekSoundPoolPlayer;
     private Animation slowAnimation;
-    private AdView adViewFacebook;
 
     private void setFlipperImage(int res) {
         MayekDrawView image = new MayekDrawView(getApplicationContext());
@@ -57,22 +51,11 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mayek_draw);
-
-        //ads start - facebook - Initialize the SDK before executing any other operations,
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        //AdSettings.addTestDevice("428c356f11e7ebfb8aba611cf2dabe19");
-        adViewFacebook = new AdView(this, "1782121292033969_1785195955059836", AdSize.BANNER_HEIGHT_50);
-        LinearLayout layout = (LinearLayout)findViewById(R.id.mayekAdView);
-        layout.addView(adViewFacebook);
-        adViewFacebook.loadAd();
-
-        //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        viewFlipper = findViewById(R.id.flipper);
         for (int i = 0; i < imageIds.length; i++) {
             setFlipperImage(imageIds[i]);
         }
@@ -100,37 +83,29 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onDestroy() {
-        if (adViewFacebook != null) {
-            adViewFacebook.destroy();
-        }
-        super.onDestroy();
-    }
-
     private void init() {
         //draw button
-        drawBtn = (ImageView) findViewById(R.id.draw_btn);
+        drawBtn = findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
         //erase button
-        soundBtn = (ImageView) findViewById(R.id.sound_btn);
+        soundBtn = findViewById(R.id.sound_btn);
         soundBtn.setOnClickListener(this);
 
         //new button
-        newBtn = (ImageView) findViewById(R.id.new_btn);
+        newBtn = findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
         //opacity
-        opacityBtn = (ImageView) findViewById(R.id.opacity_btn);
+        opacityBtn = findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
         //previous button
-        previousBtn = (ImageView) findViewById(R.id.previous_btn);
+        previousBtn = findViewById(R.id.previous_btn);
         previousBtn.setOnClickListener(this);
 
         //next
-        nextBtn = (ImageView) findViewById(R.id.next_btn);
+        nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
@@ -158,7 +133,7 @@ public class MayekDrawActivity extends BaseActivity implements View.OnClickListe
             currentDrawView.setAlpha(alpha);
         }
         //get the palette and first color button
-        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
+        LinearLayout paintLayout = findViewById(R.id.paint_colors);
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));

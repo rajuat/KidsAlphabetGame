@@ -18,12 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.facebook.FacebookSdk;
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.appevents.AppEventsLogger;
-
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.utils.BackgroundMusicFlag;
@@ -39,7 +33,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
     private ViewFlipper viewFlipper;
     private SoundPoolPlayer soundPoolPlayer;
     private Animation slowAnimation;
-    private AdView adViewFacebook;
     private float dpWidth, dpHeight;
     private float smallBrush, mediumBrush, largeBrush;
     private int[] imageIds;
@@ -57,15 +50,6 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_picture_draw);
-        //ads start  - facebook - Initialize the SDK before executing any other operations,
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        //AdSettings.addTestDevice("4c05d1a9f3c86e17fd806e48202e6a94");
-        adViewFacebook = new AdView(this, "1782121292033969_1785127565066675", AdSize.BANNER_HEIGHT_50);
-        LinearLayout layout = (LinearLayout)findViewById(R.id.pictureAdView);
-        layout.addView(adViewFacebook);
-        adViewFacebook.loadAd();
-        //ads end
 
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
@@ -108,36 +92,28 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
         super.onStop();
     }
 
-    @Override
-    protected void onDestroy() {
-        if(adViewFacebook != null){
-            adViewFacebook.destroy();
-        }
-        super.onDestroy();
-    }
-
     private void init() {
         //sizes from dimensions
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
         largeBrush = getResources().getInteger(R.integer.large_size);
 
-        drawBtn = (ImageView) findViewById(R.id.draw_btn);
+        drawBtn = findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
-        eraseBtn = (ImageView) findViewById(R.id.erase_btn);
+        eraseBtn = findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
 
-        newBtn = (ImageView) findViewById(R.id.new_btn);
+        newBtn = findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
-        opacityBtn = (ImageView) findViewById(R.id.opacity_btn);
+        opacityBtn = findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
-        previousBtn = (ImageView) findViewById(R.id.previous_btn);
+        previousBtn = findViewById(R.id.previous_btn);
         previousBtn.setOnClickListener(this);
 
-        nextBtn = (ImageView) findViewById(R.id.next_btn);
+        nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
@@ -157,7 +133,7 @@ public class PictureDrawActivity extends BaseActivity implements View.OnClickLis
             currentDrawView.setAlpha(alpha);
         }
         //get the palette and first color button
-        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
+        LinearLayout paintLayout = findViewById(R.id.paint_colors);
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));

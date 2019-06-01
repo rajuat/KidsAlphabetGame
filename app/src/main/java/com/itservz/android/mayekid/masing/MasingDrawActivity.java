@@ -14,11 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import com.facebook.FacebookSdk;
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.appevents.AppEventsLogger;
 import com.itservz.android.mayekid.BaseActivity;
 import com.itservz.android.mayekid.R;
 import com.itservz.android.mayekid.mayek.MayekDrawView;
@@ -43,7 +38,6 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
     private SoundPoolPlayer soundPoolPlayer;
     private MasingSoundPoolPlayer masingSoundPoolPlayer;
     private Animation slowAnimation;
-    private AdView adViewFacebook;
 
     private void setFlipperImage(int res) {
         MayekDrawView image = new MayekDrawView(getApplicationContext());
@@ -58,21 +52,11 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_masing_draw);
-        //ads start - facebook - Initialize the SDK before executing any other operations,
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        // Instantiate an AdView view
-        //AdSettings.addTestDevice("d20a955015c133c0ee1394fa9ae0f5c9");
-        adViewFacebook = new AdView(this, "1782121292033969_1785196805059751", AdSize.BANNER_HEIGHT_50);
-        LinearLayout layout = (LinearLayout)findViewById(R.id.masingAdView);
-        layout.addView(adViewFacebook);
-        adViewFacebook.loadAd();
-        //ads end
         Intent intent = getIntent();
         imageId = intent.getIntExtra("imageId", 0);
         imageIds = intent.getIntArrayExtra("imageIds");
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        viewFlipper = findViewById(R.id.flipper);
         for (int i = 0; i < imageIds.length; i++) {
             setFlipperImage(imageIds[i]);
         }
@@ -103,31 +87,23 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
 
     }
 
-    @Override
-    public void onDestroy() {
-        if (adViewFacebook != null) {
-            adViewFacebook.destroy();
-        }
-        super.onDestroy();
-    }
-
     private void init() {
-        drawBtn = (ImageView) findViewById(R.id.draw_btn);
+        drawBtn = findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
 
-        soundBtn = (ImageView) findViewById(R.id.masing_sound_btn);
+        soundBtn = findViewById(R.id.masing_sound_btn);
         soundBtn.setOnClickListener(this);
 
-        newBtn = (ImageView) findViewById(R.id.new_btn);
+        newBtn = findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
 
-        opacityBtn = (ImageView) findViewById(R.id.opacity_btn);
+        opacityBtn = findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
-        previousBtn = (ImageView) findViewById(R.id.previous_btn);
+        previousBtn = findViewById(R.id.previous_btn);
         previousBtn.setOnClickListener(this);
 
-        nextBtn = (ImageView) findViewById(R.id.next_btn);
+        nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.paint_animation);
@@ -146,7 +122,7 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initCurrentView() {
-        currentDrawView = (MayekDrawView) viewFlipper.findViewWithTag(imageId);
+        currentDrawView = viewFlipper.findViewWithTag(imageId);
         currentDrawView.setMayekName(getMayekName(imageId));
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(currentDrawView));
         currentDrawView.startAnimation(slowAnimation);
@@ -155,7 +131,7 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
             currentDrawView.setAlpha(alpha);
         }
         //get the palette and first color button
-        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
+        LinearLayout paintLayout = findViewById(R.id.paint_colors);
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currentDrawView.setColor(currPaint.getTag().toString());
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
@@ -247,6 +223,5 @@ public class MasingDrawActivity extends BaseActivity implements View.OnClickList
         imageView.startAnimation(animation);
         return imageView;
     }
-
 
 }
